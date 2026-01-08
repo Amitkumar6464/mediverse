@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediVerse AI - Doctor Dashboard</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+            width: 100%;
+            padding: 0 24px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-1px);
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #a855f7);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+            flex-wrap: nowrap;
+            align-items: center;
+            background: rgba(248, 250, 252, 0.6);
+            padding: 4px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link {
+            padding: 10px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 200px;
+            padding: 6px 12px 6px 32px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 6px;
+            background: rgba(248, 250, 252, 0.8);
+            color: #1e293b;
+            font-size: 13px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .notification-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(248, 250, 252, 0.8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: rgba(226, 232, 240, 0.8);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #10b981, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(248, 250, 252, 0.8);
+            color: #1e293b;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .widget-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* AI Assistant */
+        .ai-assistant {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .ai-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .ai-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #10b981, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .ai-info h3 {
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .ai-info p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .ai-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .ai-action-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(248, 250, 252, 0.8);
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ai-action-btn:hover {
+            background: rgba(226, 232, 240, 0.8);
+            transform: translateY(-1px);
+        }
+
+        /* Stats Widget */
+        .stats-widget {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Data Table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px; /* Minimum width to prevent cramping */
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        .data-table th {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 14px;
+            background: rgba(248, 250, 252, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table td {
+            color: #1e293b;
+        }
+
+        /* Mobile Card Layout for Tables */
+        .mobile-card-layout {
+            display: none;
+        }
+
+        .mobile-card {
+            background: rgba(248, 250, 252, 0.8);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .mobile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .mobile-card-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .mobile-card-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-card-label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .mobile-card-value {
+            color: #1e293b;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-badge.completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .status-badge.urgent {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(226, 232, 240, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #10b981, #3b82f6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(248, 250, 252, 0.8);
+            border-radius: 8px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(226, 232, 240, 0.8);
+        }
+
+        /* Mobile Navigation Overlay */
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .mobile-nav-overlay.show {
+            display: block;
+        }
+
+        .mobile-nav-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(226, 232, 240, 0.3);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .mobile-nav-menu.show {
+            left: 0;
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+        }
+
+        .mobile-nav-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .mobile-nav-links .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .mobile-nav-links .nav-link:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+        }
+
+        .mobile-nav-links .nav-link.active {
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .nav-links {
+                gap: 4px;
+            }
+            
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            
+            .search-box input {
+                width: 180px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .search-box input {
+                width: 160px;
+            }
+            
+            .nav-container {
+                padding: 0 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 12px;
+            }
+
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .nav-right {
+                gap: 8px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .ai-assistant {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-widget {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .widget {
+                padding: 16px;
+            }
+
+            .data-table {
+                font-size: 12px;
+                min-width: 600px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px 6px;
+            }
+
+            .table-responsive {
+                margin: 0 -16px;
+                border-radius: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 8px;
+                height: 56px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .main-content {
+                padding: 12px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+            }
+
+            .widget {
+                padding: 12px;
+            }
+
+            .data-table {
+                font-size: 11px;
+                min-width: 500px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 6px 4px;
+            }
+
+            .table-responsive {
+                margin: 0 -12px;
+                border-radius: 0;
+            }
+
+            /* Show mobile card layout on very small screens */
+            @media (max-width: 600px) {
+                .table-responsive {
+                    display: none;
+                }
+                
+                .mobile-card-layout {
+                    display: block;
+                }
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .dropdown-menu {
+                min-width: 180px;
+                right: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function DoctorDashboard() {
+            console.log('DoctorDashboard component loaded');
+            const [activeSection, setActiveSection] = useState('dashboard');
+            const [dropdownOpen, setDropdownOpen] = useState(false);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [showAddAppointment, setShowAddAppointment] = useState(false);
+            const [showCreatePrescription, setShowCreatePrescription] = useState(false);
+            const [notifications, setNotifications] = useState([
+                { id: 1, message: 'Urgent: Patient John Doe needs immediate attention', time: '2 min ago', type: 'urgent' },
+                { id: 2, message: 'Lab results ready for Sarah Johnson', time: '15 min ago', type: 'info' },
+                { id: 3, message: 'Appointment scheduled with Michael Brown', time: '1 hour ago', type: 'success' }
+            ]);
+            
+            // Doctor Data States
+            const [doctorStats, setDoctorStats] = useState({
+                todayAppointments: 12,
+                pendingConsultations: 5,
+                completedToday: 7,
+                prescriptionsIssued: 15
+            });
+
+            const [myPatients, setMyPatients] = useState([
+                { id: 'P001', name: 'John Doe', condition: 'Hypertension', lastVisit: 'Sep 18, 2024', status: 'active', urgency: 'high' },
+                { id: 'P002', name: 'Sarah Johnson', condition: 'Diabetes', lastVisit: 'Sep 17, 2024', status: 'stable', urgency: 'medium' },
+                { id: 'P003', name: 'Michael Brown', condition: 'Arthritis', lastVisit: 'Sep 16, 2024', status: 'improving', urgency: 'low' },
+                { id: 'P004', name: 'Emma Wilson', condition: 'Asthma', lastVisit: 'Sep 15, 2024', status: 'active', urgency: 'medium' },
+                { id: 'P005', name: 'David Lee', condition: 'Back Pain', lastVisit: 'Sep 14, 2024', status: 'stable', urgency: 'low' }
+            ]);
+
+            const [appointments, setAppointments] = useState([
+                { id: 'A001', patientName: 'John Doe', time: '9:00 AM', date: 'Today', type: 'Consultation', status: 'pending' },
+                { id: 'A002', patientName: 'Sarah Johnson', time: '10:30 AM', date: 'Today', type: 'Follow-up', status: 'completed' },
+                { id: 'A003', patientName: 'Michael Brown', time: '2:00 PM', date: 'Today', type: 'Check-up', status: 'pending' },
+                { id: 'A004', patientName: 'Emma Wilson', time: '3:30 PM', date: 'Today', type: 'Consultation', status: 'pending' },
+                { id: 'A005', patientName: 'David Lee', time: '4:00 PM', date: 'Today', type: 'Follow-up', status: 'pending' }
+            ]);
+
+            const [prescriptions, setPrescriptions] = useState([
+                { id: 'RX001', patientName: 'John Doe', medication: 'Lisinopril 10mg', instructions: 'Once daily', date: 'Sep 18, 2024' },
+                { id: 'RX002', patientName: 'Sarah Johnson', medication: 'Metformin 500mg', instructions: 'Twice daily with meals', date: 'Sep 17, 2024' },
+                { id: 'RX003', patientName: 'Emma Wilson', medication: 'Albuterol Inhaler', instructions: 'As needed for breathing', date: 'Sep 16, 2024' }
+            ]);
+
+            const [labResults, setLabResults] = useState([
+                { id: 'LAB001', patientName: 'John Doe', test: 'Blood Pressure', result: '140/90 mmHg', status: 'abnormal', date: 'Sep 18, 2024' },
+                { id: 'LAB002', patientName: 'Sarah Johnson', test: 'Blood Sugar', result: '120 mg/dL', status: 'normal', date: 'Sep 17, 2024' },
+                { id: 'LAB003', patientName: 'Michael Brown', test: 'X-Ray Knee', result: 'Mild arthritis', status: 'abnormal', date: 'Sep 16, 2024' }
+            ]);
+
+            const [medicalReports, setMedicalReports] = useState([
+                { id: 'RPT001', patient: 'John Doe', reportType: 'Discharge Summary', generatedBy: 'Hospital Staff', date: 'Sep 18, 2024', status: 'completed' },
+                { id: 'RPT002', patient: 'Sarah Johnson', reportType: 'Lab Report', generatedBy: 'Dr. Michael Brown', date: 'Sep 17, 2024', status: 'completed' },
+                { id: 'RPT003', patient: 'Emma Wilson', reportType: 'Radiology Report', generatedBy: 'Dr. David Lee', date: 'Sep 16, 2024', status: 'pending' },
+                { id: 'RPT004', patient: 'Michael Brown', reportType: 'Surgery Report', generatedBy: 'Hospital Staff', date: 'Sep 15, 2024', status: 'completed' },
+                { id: 'RPT005', patient: 'David Lee', reportType: 'Consultation Report', generatedBy: 'Dr. Emma Wilson', date: 'Sep 14, 2024', status: 'active' }
+            ]);
+
+            // New appointment form state
+            const [newAppointment, setNewAppointment] = useState({
+                patientName: '',
+                date: '',
+                time: '',
+                type: ''
+            });
+
+            // New prescription form state
+            const [newPrescription, setNewPrescription] = useState({
+                patientName: '',
+                medication: '',
+                dosage: '',
+                instructions: ''
+            });
+
+            // Load data from localStorage on component mount
+            useEffect(() => {
+                const savedAppointments = localStorage.getItem('hospitalAppointments');
+                const savedPrescriptions = localStorage.getItem('hospitalPrescriptions');
+                const savedNotifications = localStorage.getItem('hospitalNotifications');
+                
+                if (savedAppointments) {
+                    setAppointments(JSON.parse(savedAppointments));
+                }
+                if (savedPrescriptions) {
+                    setPrescriptions(JSON.parse(savedPrescriptions));
+                }
+                if (savedNotifications) {
+                    setNotifications(JSON.parse(savedNotifications));
+                }
+            }, []);
+
+            // Save data to localStorage whenever it changes
+            useEffect(() => {
+                localStorage.setItem('hospitalAppointments', JSON.stringify(appointments));
+            }, [appointments]);
+
+            useEffect(() => {
+                localStorage.setItem('hospitalPrescriptions', JSON.stringify(prescriptions));
+            }, [prescriptions]);
+
+            useEffect(() => {
+                localStorage.setItem('hospitalNotifications', JSON.stringify(notifications));
+            }, [notifications]);
+
+            const getStatusBadge = (status) => {
+                switch (status.toLowerCase()) {
+                    case 'active': return 'active';
+                    case 'completed': return 'completed';
+                    case 'pending': return 'pending';
+                    case 'urgent': return 'urgent';
+                    case 'stable': return 'completed';
+                    case 'improving': return 'active';
+                    default: return 'pending';
+                }
+            };
+
+            const toggleDropdown = () => {
+                setDropdownOpen(!dropdownOpen);
+            };
+
+            const toggleMobileMenu = () => {
+                setMobileMenuOpen(!mobileMenuOpen);
+            };
+
+            const closeMobileMenu = () => {
+                setMobileMenuOpen(false);
+            };
+
+            const handleMobileNavClick = (section) => {
+                setActiveSection(section);
+                setMobileMenuOpen(false);
+            };
+
+            // Medical Reports Functions
+            const handleViewReport = (reportId) => {
+                const report = medicalReports.find(r => r.id === reportId);
+                if (report) {
+                    alert(`Viewing ${report.reportType} for ${report.patient}\n\nReport ID: ${report.id}\nGenerated by: ${report.generatedBy}\nDate: ${report.date}\nStatus: ${report.status.toUpperCase()}`);
+                }
+            };
+
+            const handleEditReport = (reportId) => {
+                const report = medicalReports.find(r => r.id === reportId);
+                if (report) {
+                    const newStatus = prompt(`Edit status for ${report.reportType} (${report.patient}):\n\nCurrent status: ${report.status}\n\nEnter new status (completed/pending/active):`, report.status);
+                    if (newStatus && ['completed', 'pending', 'active'].includes(newStatus.toLowerCase())) {
+                        const updatedReports = medicalReports.map(r => 
+                            r.id === reportId ? { ...r, status: newStatus.toLowerCase() } : r
+                        );
+                        setMedicalReports(updatedReports);
+                        
+                        // Show success notification
+                        const successNotification = {
+                            id: notifications.length + 1,
+                            message: `Report ${reportId} status updated to ${newStatus}`,
+                            time: 'Just now',
+                            type: 'success'
+                        };
+                        setNotifications([successNotification, ...notifications]);
+                    }
+                }
+            };
+
+            const handleContinueReport = (reportId) => {
+                const report = medicalReports.find(r => r.id === reportId);
+                if (report) {
+                    alert(`Continuing work on ${report.reportType} for ${report.patient}\n\nReport ID: ${report.id}\nCurrent Status: In Progress\n\nRedirecting to report editor...`);
+                    
+                    // Update status to active if not already
+                    if (report.status !== 'active') {
+                        const updatedReports = medicalReports.map(r => 
+                            r.id === reportId ? { ...r, status: 'active' } : r
+                        );
+                        setMedicalReports(updatedReports);
+                    }
+                }
+            };
+
+            const handleGenerateReport = () => {
+                const patientName = prompt('Enter patient name for new report:');
+                const reportType = prompt('Enter report type (e.g., Lab Report, X-Ray Report, Consultation Report):');
+                
+                if (patientName && reportType) {
+                    const newReport = {
+                        id: `RPT${String(medicalReports.length + 1).padStart(3, '0')}`,
+                        patient: patientName,
+                        reportType: reportType,
+                        generatedBy: 'Dr. Current User',
+                        date: new Date().toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: '2-digit' 
+                        }),
+                        status: 'pending'
+                    };
+                    
+                    setMedicalReports([newReport, ...medicalReports]);
+                    
+                    // Show success notification
+                    const successNotification = {
+                        id: notifications.length + 1,
+                        message: `New ${reportType} created for ${patientName}`,
+                        time: 'Just now',
+                        type: 'success'
+                    };
+                    setNotifications([successNotification, ...notifications]);
+                }
+            };
+
+            const logout = () => {
+                const logoutNotification = {
+                    id: notifications.length + 1,
+                    message: 'Logging out... Redirecting to login page',
+                    time: 'Just now',
+                    type: 'info'
+                };
+                setNotifications([logoutNotification, ...notifications]);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            };
+
+            // Search functionality
+            const handleSearch = (query) => {
+                setSearchQuery(query);
+            };
+
+            const filteredPatients = myPatients.filter(patient => 
+                patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                patient.condition.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                patient.id.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            // Add new appointment
+            const handleAddAppointment = () => {
+                if (newAppointment.patientName && newAppointment.date && newAppointment.time && newAppointment.type) {
+                    const newId = 'A' + String(appointments.length + 1).padStart(3, '0');
+                    const appointmentData = {
+                        id: newId,
+                        patientName: newAppointment.patientName,
+                        time: newAppointment.time,
+                        date: newAppointment.date,
+                        type: newAppointment.type,
+                        status: 'pending'
+                    };
+                    
+                    setAppointments([appointmentData, ...appointments]);
+                    setNewAppointment({ patientName: '', date: '', time: '', type: '' });
+                    setShowAddAppointment(false);
+                    
+                    // Add notification
+                    const successNotification = {
+                        id: notifications.length + 1,
+                        message: `Appointment scheduled successfully for ${newAppointment.patientName}`,
+                        time: 'Just now',
+                        type: 'success'
+                    };
+                    setNotifications([successNotification, ...notifications]);
+                } else {
+                    const errorNotification = {
+                        id: notifications.length + 1,
+                        message: 'Please fill in all fields to schedule appointment',
+                        time: 'Just now',
+                        type: 'error'
+                    };
+                    setNotifications([errorNotification, ...notifications]);
+                }
+            };
+
+            // Create prescription
+            const handleCreatePrescription = () => {
+                if (newPrescription.patientName && newPrescription.medication && newPrescription.dosage && newPrescription.instructions) {
+                    const newId = 'RX' + String(prescriptions.length + 1).padStart(3, '0');
+                    const prescriptionData = {
+                        id: newId,
+                        patientName: newPrescription.patientName,
+                        medication: `${newPrescription.medication} ${newPrescription.dosage}`,
+                        instructions: newPrescription.instructions,
+                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+                    };
+                    
+                    setPrescriptions([prescriptionData, ...prescriptions]);
+                    setNewPrescription({ patientName: '', medication: '', dosage: '', instructions: '' });
+                    setShowCreatePrescription(false);
+                    
+                    // Add notification
+                    const successNotification = {
+                        id: notifications.length + 1,
+                        message: `Prescription created successfully for ${newPrescription.patientName}`,
+                        time: 'Just now',
+                        type: 'success'
+                    };
+                    setNotifications([successNotification, ...notifications]);
+                } else {
+                    const errorNotification = {
+                        id: notifications.length + 1,
+                        message: 'Please fill in all fields to create prescription',
+                        time: 'Just now',
+                        type: 'error'
+                    };
+                    setNotifications([errorNotification, ...notifications]);
+                }
+            };
+
+            // View patient details
+            const [selectedPatient, setSelectedPatient] = useState(null);
+            
+            const viewPatientDetails = (patient) => {
+                setSelectedPatient(patient);
+            };
+
+            // Complete appointment
+            const completeAppointment = (appointmentId) => {
+                setAppointments(prev => prev.map(appointment => 
+                    appointment.id === appointmentId ? { ...appointment, status: 'completed' } : appointment
+                ));
+                
+                const appointment = appointments.find(a => a.id === appointmentId);
+                const newNotification = {
+                    id: notifications.length + 1,
+                    message: `Appointment with ${appointment.patientName} completed`,
+                    time: 'Just now',
+                    type: 'success'
+                };
+                setNotifications([newNotification, ...notifications]);
+            };
+
+            // AI Assistant actions
+            const [showAIChat, setShowAIChat] = useState(false);
+            const [aiMessages, setAiMessages] = useState([]);
+            const [currentMessage, setCurrentMessage] = useState('');
+
+            const chatWithAI = () => {
+                console.log('AI Chat button clicked');
+                setShowAIChat(true);
+            };
+
+            const sendAIMessage = () => {
+                if (currentMessage.trim()) {
+                    const newMessages = [
+                        ...aiMessages,
+                        { type: 'user', message: currentMessage, time: new Date().toLocaleTimeString() },
+                        { 
+                            type: 'ai', 
+                            message: `Thank you for your query. Based on "${currentMessage}", I recommend:\n\n• Review patient care protocols\n• Monitor treatment effectiveness\n• Check medication schedules\n• Optimize consultation workflow\n\n⚠️ Note: This is AI-generated advice for medical professionals.`,
+                            time: new Date().toLocaleTimeString()
+                        }
+                    ];
+                    setAiMessages(newMessages);
+                    setCurrentMessage('');
+                }
+            };
+
+            const [showAISettings, setShowAISettings] = useState(false);
+            const [aiSettings, setAiSettings] = useState({
+                patientAnalytics: true,
+                treatmentRecommendations: true,
+                medicationAlerts: true,
+                scheduleOptimization: true,
+                emergencyNotifications: true
+            });
+
+            const configureAI = () => {
+                console.log('AI Configure button clicked');
+                setShowAISettings(true);
+            };
+
+            // Notification management
+            const clearNotifications = () => {
+                setNotifications([]);
+            };
+
+            const markNotificationRead = (notificationId) => {
+                setNotifications(prev => prev.filter(n => n.id !== notificationId));
+            };
+
+            return (
+                <div>
+                    {/* Top Navigation */}
+                    <nav className="top-nav">
+                        <div className="nav-container">
+                            <div className="nav-left">
+                                <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
+                                    <i className="fas fa-bars"></i>
+                                </button>
+                                
+                                <a href="#" className="logo">
+                                    <div className="logo-icon">
+                                        <i className="fas fa-stethoscope"></i>
+                                    </div>
+                                    <span className="logo-text">MediVerse</span>
+                                </a>
+                                
+                                <ul className="nav-links">
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('dashboard')}
+                                        >
+                                            <i className="fas fa-tachometer-alt"></i> Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'patients' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('patients')}
+                                        >
+                                            <i className="fas fa-users"></i> Patients
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'analytics' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('analytics')}
+                                        >
+                                            <i className="fas fa-chart-line"></i> Analytics
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'bed-management' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('bed-management')}
+                                        >
+                                            <i className="fas fa-bed"></i> Bed Management
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'medical-reports' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('medical-reports')}
+                                        >
+                                            <i className="fas fa-file-medical"></i> Medical Reports
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div className="nav-right">
+                                <div className="search-box">
+                                    <i className="fas fa-search"></i>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search patients, conditions, medications..." 
+                                        value={searchQuery}
+                                        onChange={(e) => handleSearch(e.target.value)}
+                                    />
+                                </div>
+                                
+                                <div className="user-dropdown">
+                                    <button className="notification-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                        <i className="fas fa-bell"></i>
+                                        {notifications.length > 0 && <div className="notification-dot"></div>}
+                                    </button>
+                                    {dropdownOpen && (
+                                        <div className="dropdown-menu show" style={{right: '0', left: 'auto', minWidth: '350px'}}>
+                                            <div className="dropdown-header">
+                                                <strong>Notifications ({notifications.length})</strong>
+                                                <button onClick={clearNotifications} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer'}}>
+                                                    Clear All
+                                                </button>
+                                            </div>
+                                            {notifications.length === 0 ? (
+                                                <div style={{padding: '16px', textAlign: 'center', color: '#64748b'}}>
+                                                    No notifications
+                                                </div>
+                                            ) : (
+                                                notifications.map(notification => (
+                                                    <div key={notification.id} className="dropdown-item" onClick={() => markNotificationRead(notification.id)}>
+                                                        <i className={`fas fa-${notification.type === 'urgent' ? 'exclamation-triangle' : notification.type === 'success' ? 'check-circle' : 'info-circle'}`} 
+                                                           style={{color: notification.type === 'urgent' ? '#ef4444' : notification.type === 'success' ? '#10b981' : '#3b82f6'}}></i>
+                                                        <div>
+                                                            <div style={{fontSize: '0.875rem'}}>{notification.message}</div>
+                                                            <div style={{fontSize: '0.75rem', color: '#64748b'}}>{notification.time}</div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <div className="user-dropdown">
+                                    <div className="user-avatar" onClick={toggleDropdown}>
+                                        HA
+                                    </div>
+                                    <div className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}>
+                                        <div className="dropdown-header">
+                                            <strong>Hospital Administrator</strong>
+                                            <div style={{color: '#64748b', fontSize: '14px'}}>System Admin</div>
+                                        </div>
+                                        <a href="#" className="dropdown-item">
+                                            <i className="fas fa-user"></i> Profile
+                                        </a>
+                                        <a href="#" className="dropdown-item">
+                                            <i className="fas fa-cog"></i> Settings
+                                        </a>
+                                        <a href="#" className="dropdown-item">
+                                            <i className="fas fa-calendar"></i> Schedule
+                                        </a>
+                                        <a href="#" className="dropdown-item" onClick={logout}>
+                                            <i className="fas fa-sign-out-alt"></i> Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Mobile Navigation Overlay */}
+                    <div className={`mobile-nav-overlay ${mobileMenuOpen ? 'show' : ''}`} onClick={closeMobileMenu}></div>
+                    
+                    {/* Mobile Navigation Menu */}
+                    <div className={`mobile-nav-menu ${mobileMenuOpen ? 'show' : ''}`}>
+                        <div className="mobile-nav-header">
+                            <div className="logo">
+                                <div className="logo-icon">
+                                    <i className="fas fa-stethoscope"></i>
+                                </div>
+                                <span className="logo-text">MediVerse</span>
+                            </div>
+                            <button className="mobile-nav-close" onClick={closeMobileMenu}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <ul className="mobile-nav-links">
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('dashboard')}
+                                >
+                                    <i className="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'patients' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('patients')}
+                                >
+                                    <i className="fas fa-users"></i> Patients
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'analytics' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('analytics')}
+                                >
+                                    <i className="fas fa-chart-line"></i> Analytics
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'bed-management' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('bed-management')}
+                                >
+                                    <i className="fas fa-bed"></i> Bed Management
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'medical-reports' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('medical-reports')}
+                                >
+                                    <i className="fas fa-file-medical"></i> Medical Reports
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <div style={{marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(226, 232, 240, 0.3)'}}>
+                            <div className="search-box" style={{marginBottom: '20px'}}>
+                                <i className="fas fa-search"></i>
+                                <input 
+                                    type="text" 
+                                    placeholder="Search..." 
+                                    value={searchQuery}
+                                    onChange={(e) => handleSearch(e.target.value)}
+                                    style={{width: '100%'}}
+                                />
+                            </div>
+                            
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                <button className="btn btn-primary" style={{width: '100%', justifyContent: 'center'}}>
+                                    <i className="fas fa-user"></i> Profile
+                                </button>
+                                <button className="btn" onClick={logout} style={{width: '100%', justifyContent: 'center', background: '#f1f5f9', color: '#64748b'}}>
+                                    <i className="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="main-content">
+                        {/* Dashboard Section */}
+                        {activeSection === 'dashboard' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-hospital" style={{color: '#3b82f6'}}></i>
+                                        Hospital Management Dashboard
+                                    </h1>
+                                    <p className="page-subtitle">Comprehensive hospital operations and resource management</p>
+                                </div>
+
+                                <div className="dashboard-grid">
+                                    {/* Top Widgets Row */}
+                                    <div className="ai-assistant">
+                                        {/* AI Diagnostic Assistant Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-brain"></i>
+                                                    </div>
+                                                    AI Diagnostic Assistant
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="ai-profile">
+                                                <div className="ai-avatar">
+                                                    <i className="fas fa-robot"></i>
+                                                </div>
+                                                <div className="ai-info">
+                                                    <h3>Hospital AI Assistant</h3>
+                                                    <p>AI Hospital Management System</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="ai-actions">
+                                                <button className="ai-action-btn" onClick={chatWithAI} title="Chat with AI Assistant">
+                                                    <i className="fas fa-phone"></i>
+                                                </button>
+                                                <button className="ai-action-btn" onClick={chatWithAI} title="Chat with AI">
+                                                    <i className="fas fa-comment"></i>
+                                                </button>
+                                                <button className="ai-action-btn" onClick={configureAI} title="Configure AI">
+                                                    <i className="fas fa-cog"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            {/* Test Button */}
+                                            <div style={{marginTop: '12px', textAlign: 'center'}}>
+                                                <button 
+                                                    className="btn btn-primary" 
+                                                    onClick={() => {
+                                                        const testNotification = {
+                                                            id: notifications.length + 1,
+                                                            message: '✅ AI Assistant connection successful!',
+                                                            time: 'Just now',
+                                                            type: 'success'
+                                                        };
+                                                        setNotifications([testNotification, ...notifications]);
+                                                    }}
+                                                    style={{fontSize: '0.75rem', padding: '6px 12px'}}
+                                                >
+                                                    Test AI Connection
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Today's Stats Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                        <i className="fas fa-chart-bar"></i>
+                                                    </div>
+                                                    Today's Stats
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="stats-widget">
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Today's Appointments</span>
+                                                    <span className="stat-value">{doctorStats.todayAppointments} <span className="stat-change positive">+2</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Pending Consultations</span>
+                                                    <span className="stat-value">{doctorStats.pendingConsultations} <span className="stat-change negative">-1</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Completed Today</span>
+                                                    <span className="stat-value">{doctorStats.completedToday} <span className="stat-change positive">+3</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Prescriptions Issued</span>
+                                                    <span className="stat-value">{doctorStats.prescriptionsIssued} <span className="stat-change positive">+5</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Quick Actions Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-plus-circle"></i>
+                                                    </div>
+                                                    Quick Actions
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                                <button className="btn btn-primary" onClick={() => setShowAddAppointment(true)}>
+                                                    <i className="fas fa-calendar-plus"></i> Schedule Appointment
+                                                </button>
+                                                <button className="btn btn-success" onClick={() => setShowCreatePrescription(true)}>
+                                                    <i className="fas fa-prescription-bottle"></i> Create Prescription
+                                                </button>
+                                                <button className="btn btn-primary" onClick={() => setActiveSection('patients')}>
+                                                    <i className="fas fa-user-plus"></i> View All Patients
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Data Tables Section */}
+                                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px'}}>
+                                        {/* Today's Appointments */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                        <i className="fas fa-calendar-check"></i>
+                                                    </div>
+                                                    Today's Appointments
+                                                </div>
+                                                <button className="btn btn-primary" onClick={() => setShowAddAppointment(true)} style={{fontSize: '0.75rem', padding: '6px 12px'}}>
+                                                    <i className="fas fa-plus"></i> Add
+                                                </button>
+                                            </div>
+                                            
+                                            <table className="data-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Patient</th>
+                                                        <th>Time</th>
+                                                        <th>Type</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {appointments.slice(0, 5).map((appointment, index) => (
+                                                        <tr key={index}>
+                                                            <td>{appointment.patientName}</td>
+                                                            <td>{appointment.time}</td>
+                                                            <td>{appointment.type}</td>
+                                                            <td><span className={`status-badge ${getStatusBadge(appointment.status)}`}>{appointment.status}</span></td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        {/* Recent Lab Results */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #8b5cf6)'}}>
+                                                        <i className="fas fa-flask"></i>
+                                                    </div>
+                                                    Recent Lab Results
+                                                </div>
+                                            </div>
+                                            
+                                            <table className="data-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Patient</th>
+                                                        <th>Test</th>
+                                                        <th>Result</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {labResults.map((result, index) => (
+                                                        <tr key={index}>
+                                                            <td>{result.patientName}</td>
+                                                            <td>{result.test}</td>
+                                                            <td>{result.result}</td>
+                                                            <td><span className={`status-badge ${result.status === 'normal' ? 'active' : 'urgent'}`}>{result.status}</span></td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    {/* Additional Sections */}
+                                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px'}}>
+                                        {/* Critical Patients */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #ef4444, #f59e0b)'}}>
+                                                        <i className="fas fa-exclamation-triangle"></i>
+                                                    </div>
+                                                    Critical Patients
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                                {myPatients.filter(p => p.urgency === 'high').map((patient, index) => (
+                                                    <div key={index} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px'}}>
+                                                        <div>
+                                                            <div style={{color: '#1e293b', fontWeight: '600', fontSize: '0.875rem'}}>{patient.name}</div>
+                                                            <div style={{color: '#64748b', fontSize: '0.75rem'}}>{patient.condition}</div>
+                                                        </div>
+                                                        <span className="status-badge urgent">High Priority</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Recent Prescriptions */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)'}}>
+                                                        <i className="fas fa-prescription-bottle"></i>
+                                                    </div>
+                                                    Recent Prescriptions
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                                {prescriptions.slice(0, 3).map((prescription, index) => (
+                                                    <div key={index} style={{padding: '12px', background: 'rgba(248, 250, 252, 0.8)', borderRadius: '8px'}}>
+                                                        <div style={{color: '#1e293b', fontWeight: '600', fontSize: '0.875rem'}}>{prescription.patientName}</div>
+                                                        <div style={{color: '#64748b', fontSize: '0.75rem'}}>{prescription.medication}</div>
+                                                        <div style={{color: '#64748b', fontSize: '0.75rem'}}>{prescription.instructions}</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Performance Metrics */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-chart-line"></i>
+                                                    </div>
+                                                    Performance Metrics
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                                <div>
+                                                    <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                                                        <span style={{color: '#64748b'}}>Patient Satisfaction</span>
+                                                        <span style={{color: '#1e293b', fontWeight: '600'}}>96%</span>
+                                                    </div>
+                                                    <div className="progress-bar">
+                                                        <div className="progress-fill" style={{width: '96%'}}></div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                                                        <span style={{color: '#64748b'}}>Treatment Success Rate</span>
+                                                        <span style={{color: '#1e293b', fontWeight: '600'}}>94%</span>
+                                                    </div>
+                                                    <div className="progress-bar">
+                                                        <div className="progress-fill" style={{width: '94%'}}></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Hospital Patients Section */}
+                        {activeSection === 'patients' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-users" style={{color: '#3b82f6'}}></i>
+                                        Hospital Patients
+                                    </h1>
+                                    <p className="page-subtitle">Manage all patient records and medical history</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-users"></i>
+                                            </div>
+                                            Patient List
+                                        </div>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Condition</th>
+                                                <th>Last Visit</th>
+                                                <th>Status</th>
+                                                <th>Urgency</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(searchQuery ? filteredPatients : myPatients).map((patient, index) => (
+                                                <tr key={index}>
+                                                    <td>{patient.id}</td>
+                                                    <td>{patient.name}</td>
+                                                    <td>{patient.condition}</td>
+                                                    <td>{patient.lastVisit}</td>
+                                                    <td><span className={`status-badge ${getStatusBadge(patient.status)}`}>{patient.status}</span></td>
+                                                    <td><span className={`status-badge ${patient.urgency === 'high' ? 'urgent' : patient.urgency === 'medium' ? 'pending' : 'active'}`}>{patient.urgency}</span></td>
+                                                    <td>
+                                                        <button className="btn btn-primary" style={{fontSize: '0.75rem', padding: '4px 8px'}} onClick={() => viewPatientDetails(patient)}>
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Appointments Section */}
+                        {activeSection === 'appointments' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-calendar" style={{color: '#3b82f6'}}></i>
+                                        Appointments
+                                    </h1>
+                                    <p className="page-subtitle">Manage your appointment schedule</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-calendar-check"></i>
+                                            </div>
+                                            All Appointments
+                                        </div>
+                                        <button className="btn btn-primary" onClick={() => setShowAddAppointment(true)}>
+                                            <i className="fas fa-plus"></i> Schedule Appointment
+                                        </button>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Patient</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Type</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {appointments.map((appointment, index) => (
+                                                <tr key={index}>
+                                                    <td>{appointment.id}</td>
+                                                    <td>{appointment.patientName}</td>
+                                                    <td>{appointment.date}</td>
+                                                    <td>{appointment.time}</td>
+                                                    <td>{appointment.type}</td>
+                                                    <td><span className={`status-badge ${getStatusBadge(appointment.status)}`}>{appointment.status}</span></td>
+                                                    <td>
+                                                        {appointment.status === 'pending' && (
+                                                            <button className="btn btn-success" style={{fontSize: '0.75rem', padding: '4px 8px'}} onClick={() => completeAppointment(appointment.id)}>
+                                                                Complete
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Prescriptions Section */}
+                        {activeSection === 'prescriptions' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-prescription" style={{color: '#3b82f6'}}></i>
+                                        Prescriptions
+                                    </h1>
+                                    <p className="page-subtitle">Manage patient prescriptions and medications</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-prescription-bottle"></i>
+                                            </div>
+                                            All Prescriptions
+                                        </div>
+                                        <button className="btn btn-primary" onClick={() => setShowCreatePrescription(true)}>
+                                            <i className="fas fa-plus"></i> Create Prescription
+                                        </button>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Patient</th>
+                                                <th>Medication</th>
+                                                <th>Instructions</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {prescriptions.map((prescription, index) => (
+                                                <tr key={index}>
+                                                    <td>{prescription.id}</td>
+                                                    <td>{prescription.patientName}</td>
+                                                    <td>{prescription.medication}</td>
+                                                    <td>{prescription.instructions}</td>
+                                                    <td>{prescription.date}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Lab Results Section */}
+                        {activeSection === 'lab-results' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-flask" style={{color: '#3b82f6'}}></i>
+                                        Lab Results
+                                    </h1>
+                                    <p className="page-subtitle">Review patient laboratory test results</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-flask"></i>
+                                            </div>
+                                            Recent Lab Results
+                                        </div>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Patient</th>
+                                                <th>Test</th>
+                                                <th>Result</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {labResults.map((result, index) => (
+                                                <tr key={index}>
+                                                    <td>{result.id}</td>
+                                                    <td>{result.patientName}</td>
+                                                    <td>{result.test}</td>
+                                                    <td>{result.result}</td>
+                                                    <td><span className={`status-badge ${result.status === 'normal' ? 'active' : 'urgent'}`}>{result.status}</span></td>
+                                                    <td>{result.date}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Analytics Section */}
+                        {activeSection === 'analytics' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-chart-line" style={{color: '#3b82f6'}}></i>
+                                        Analytics
+                                    </h1>
+                                    <p className="page-subtitle">Hospital performance metrics and insights</p>
+                                </div>
+
+                                <div className="dashboard-grid">
+                                    <div className="ai-assistant">
+                                        {/* Hospital Stats Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                        <i className="fas fa-chart-bar"></i>
+                                                    </div>
+                                                    Hospital Stats
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="stats-widget">
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Total Beds</span>
+                                                    <span className="stat-value">250 <span className="stat-change positive">+15</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Available Beds</span>
+                                                    <span className="stat-value">45 <span className="stat-change positive">+5</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">ICU Beds</span>
+                                                    <span className="stat-value">8/20 <span className="stat-change negative">-2</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Emergency Cases</span>
+                                                    <span className="stat-value">12 <span className="stat-change positive">+3</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Revenue Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-rupee-sign"></i>
+                                                    </div>
+                                                    Revenue
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="stats-widget">
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Monthly Revenue</span>
+                                                    <span className="stat-value">₹2,400,000</span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Total Income</span>
+                                                    <span className="stat-value">₹2,400,000 <span className="stat-change positive">+15%</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Total Expenses</span>
+                                                    <span className="stat-value">₹1,800,000 <span className="stat-change positive">+8%</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Net Profit</span>
+                                                    <span className="stat-value">₹600,000 <span className="stat-change positive">+25%</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Performance Metrics */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #f59e0b, #ef4444)'}}>
+                                                        <i className="fas fa-tachometer-alt"></i>
+                                                    </div>
+                                                    Performance
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="stats-widget">
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Patient Satisfaction</span>
+                                                    <span className="stat-value">95% <span className="stat-change positive">+2%</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Average Wait Time</span>
+                                                    <span className="stat-value">15 min <span className="stat-change negative">-5 min</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Staff Efficiency</span>
+                                                    <span className="stat-value">88% <span className="stat-change positive">+3%</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Readmission Rate</span>
+                                                    <span className="stat-value">5.2% <span className="stat-change negative">-0.8%</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Bed Management Section */}
+                        {activeSection === 'bed-management' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-bed" style={{color: '#3b82f6'}}></i>
+                                        Bed Management
+                                    </h1>
+                                    <p className="page-subtitle">Monitor and manage hospital bed availability</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-bed"></i>
+                                            </div>
+                                            Bed Status Overview
+                                        </div>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Ward</th>
+                                                <th>Total Beds</th>
+                                                <th>Occupied</th>
+                                                <th>Available</th>
+                                                <th>Maintenance</th>
+                                                <th>Occupancy Rate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>General Ward</td>
+                                                <td>100</td>
+                                                <td>85</td>
+                                                <td>12</td>
+                                                <td>3</td>
+                                                <td><span className="status-badge active">85%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>ICU</td>
+                                                <td>20</td>
+                                                <td>18</td>
+                                                <td>2</td>
+                                                <td>0</td>
+                                                <td><span className="status-badge urgent">90%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Emergency</td>
+                                                <td>30</td>
+                                                <td>22</td>
+                                                <td>8</td>
+                                                <td>0</td>
+                                                <td><span className="status-badge pending">73%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pediatric</td>
+                                                <td>25</td>
+                                                <td>18</td>
+                                                <td>6</td>
+                                                <td>1</td>
+                                                <td><span className="status-badge active">72%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Maternity</td>
+                                                <td>40</td>
+                                                <td>28</td>
+                                                <td>11</td>
+                                                <td>1</td>
+                                                <td><span className="status-badge active">70%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Surgery</td>
+                                                <td>35</td>
+                                                <td>25</td>
+                                                <td>8</td>
+                                                <td>2</td>
+                                                <td><span className="status-badge active">71%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Medical Reports Section */}
+                        {activeSection === 'medical-reports' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-file-medical" style={{color: '#3b82f6'}}></i>
+                                        Medical Reports
+                                    </h1>
+                                    <p className="page-subtitle">Generate and manage medical reports and documentation</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-file-medical-alt"></i>
+                                            </div>
+                                            Recent Medical Reports
+                                        </div>
+                                        <button className="btn btn-primary" onClick={handleGenerateReport}>
+                                            <i className="fas fa-plus"></i> Generate Report
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="table-responsive">
+                                        <table className="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Report ID</th>
+                                                    <th>Patient</th>
+                                                    <th>Report Type</th>
+                                                    <th>Generated By</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                        <tbody>
+                                            {medicalReports.map(report => (
+                                                <tr key={report.id}>
+                                                    <td>{report.id}</td>
+                                                    <td>{report.patient}</td>
+                                                    <td>{report.reportType}</td>
+                                                    <td>{report.generatedBy}</td>
+                                                    <td>{report.date}</td>
+                                                    <td>
+                                                        <span className={`status-badge ${report.status}`}>
+                                                            {report.status === 'completed' ? 'Completed' : 
+                                                             report.status === 'pending' ? 'Pending' : 'In Progress'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        {report.status === 'completed' ? (
+                                                            <button 
+                                                                className="btn btn-primary" 
+                                                                style={{fontSize: '0.75rem', padding: '4px 8px'}}
+                                                                onClick={() => handleViewReport(report.id)}
+                                                            >
+                                                                View
+                                                            </button>
+                                                        ) : report.status === 'pending' ? (
+                                                            <button 
+                                                                className="btn btn-primary" 
+                                                                style={{fontSize: '0.75rem', padding: '4px 8px'}}
+                                                                onClick={() => handleEditReport(report.id)}
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                        ) : (
+                                                            <button 
+                                                                className="btn btn-primary" 
+                                                                style={{fontSize: '0.75rem', padding: '4px 8px'}}
+                                                                onClick={() => handleContinueReport(report.id)}
+                                                            >
+                                                                Continue
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Mobile Card Layout */}
+                                    <div className="mobile-card-layout">
+                                        {medicalReports.map(report => (
+                                            <div key={report.id} className="mobile-card">
+                                                <div className="mobile-card-header">
+                                                    <span>{report.id}</span>
+                                                    <span className={`status-badge ${report.status}`}>
+                                                        {report.status === 'completed' ? 'Completed' : 
+                                                         report.status === 'pending' ? 'Pending' : 'In Progress'}
+                                                    </span>
+                                                </div>
+                                                <div className="mobile-card-content">
+                                                    <div className="mobile-card-item">
+                                                        <div className="mobile-card-label">Patient</div>
+                                                        <div className="mobile-card-value">{report.patient}</div>
+                                                    </div>
+                                                    <div className="mobile-card-item">
+                                                        <div className="mobile-card-label">Report Type</div>
+                                                        <div className="mobile-card-value">{report.reportType}</div>
+                                                    </div>
+                                                    <div className="mobile-card-item">
+                                                        <div className="mobile-card-label">Generated By</div>
+                                                        <div className="mobile-card-value">{report.generatedBy}</div>
+                                                    </div>
+                                                    <div className="mobile-card-item">
+                                                        <div className="mobile-card-label">Date</div>
+                                                        <div className="mobile-card-value">{report.date}</div>
+                                                    </div>
+                                                </div>
+                                                <div style={{marginTop: '12px', textAlign: 'center'}}>
+                                                    {report.status === 'completed' ? (
+                                                        <button 
+                                                            className="btn btn-primary" 
+                                                            style={{fontSize: '0.75rem', padding: '6px 12px'}}
+                                                            onClick={() => handleViewReport(report.id)}
+                                                        >
+                                                            View
+                                                        </button>
+                                                    ) : report.status === 'pending' ? (
+                                                        <button 
+                                                            className="btn btn-primary" 
+                                                            style={{fontSize: '0.75rem', padding: '6px 12px'}}
+                                                            onClick={() => handleEditReport(report.id)}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    ) : (
+                                                        <button 
+                                                            className="btn btn-primary" 
+                                                            style={{fontSize: '0.75rem', padding: '6px 12px'}}
+                                                            onClick={() => handleContinueReport(report.id)}
+                                                        >
+                                                            Continue
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+        )}
+
+                        {/* Add Appointment Modal */}
+                        {showAddAppointment && (
+                            <div style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'rgba(0, 0, 0, 0.5)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 1000
+                            }}>
+                                <div style={{
+                                    background: 'white',
+                                    padding: '32px',
+                                    borderRadius: '16px',
+                                    width: '500px',
+                                    maxWidth: '90vw'
+                                }}>
+                                    <h3 style={{marginBottom: '24px', color: '#1e293b'}}>Schedule New Appointment</h3>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                        <input
+                                            type="text"
+                                            placeholder="Patient Name"
+                                            value={newAppointment.patientName}
+                                            onChange={(e) => setNewAppointment({...newAppointment, patientName: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <input
+                                            type="date"
+                                            value={newAppointment.date}
+                                            onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <input
+                                            type="time"
+                                            value={newAppointment.time}
+                                            onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <select
+                                            value={newAppointment.type}
+                                            onChange={(e) => setNewAppointment({...newAppointment, type: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        >
+                                            <option value="">Select Appointment Type</option>
+                                            <option value="Consultation">Consultation</option>
+                                            <option value="Follow-up">Follow-up</option>
+                                            <option value="Check-up">Check-up</option>
+                                            <option value="Emergency">Emergency</option>
+                                        </select>
+                                    </div>
+                                    <div style={{display: 'flex', gap: '12px', marginTop: '24px'}}>
+                                        <button className="btn btn-primary" onClick={handleAddAppointment}>
+                                            Schedule Appointment
+                                        </button>
+                                        <button className="btn" onClick={() => setShowAddAppointment(false)} style={{background: '#f1f5f9', color: '#64748b'}}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Create Prescription Modal */}
+                        {showCreatePrescription && (
+                            <div style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'rgba(0, 0, 0, 0.5)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 1000
+                            }}>
+                                <div style={{
+                                    background: 'white',
+                                    padding: '32px',
+                                    borderRadius: '16px',
+                                    width: '500px',
+                                    maxWidth: '90vw'
+                                }}>
+                                    <h3 style={{marginBottom: '24px', color: '#1e293b'}}>Create New Prescription</h3>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                        <input
+                                            type="text"
+                                            placeholder="Patient Name"
+                                            value={newPrescription.patientName}
+                                            onChange={(e) => setNewPrescription({...newPrescription, patientName: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Medication Name"
+                                            value={newPrescription.medication}
+                                            onChange={(e) => setNewPrescription({...newPrescription, medication: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Dosage (e.g., 10mg, 500mg)"
+                                            value={newPrescription.dosage}
+                                            onChange={(e) => setNewPrescription({...newPrescription, dosage: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <textarea
+                                            placeholder="Instructions (e.g., Take twice daily with meals)"
+                                            value={newPrescription.instructions}
+                                            onChange={(e) => setNewPrescription({...newPrescription, instructions: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', minHeight: '80px'}}
+                                        />
+                                    </div>
+                                    <div style={{display: 'flex', gap: '12px', marginTop: '24px'}}>
+                                        <button className="btn btn-primary" onClick={handleCreatePrescription}>
+                                            Create Prescription
+                                        </button>
+                                        <button className="btn" onClick={() => setShowCreatePrescription(false)} style={{background: '#f1f5f9', color: '#64748b'}}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* AI Chat Modal */}
+                        {showAIChat && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '500px', width: '90%', maxHeight: '600px', display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>💬 AI Medical Assistant</h3>
+                                        <button onClick={() => setShowAIChat(false)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{flex: 1, overflowY: 'auto', marginBottom: '16px', minHeight: '300px', maxHeight: '400px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px'}}>
+                                        {aiMessages.length === 0 ? (
+                                            <div style={{textAlign: 'center', color: '#64748b', padding: '40px 20px'}}>
+                                                <i className="fas fa-stethoscope" style={{fontSize: '48px', marginBottom: '16px', color: '#8b5cf6'}}></i>
+                                                <p>Hello Doctor! I'm your AI Medical Assistant. Ask me about patient care, treatments, or medical protocols!</p>
+                                            </div>
+                                        ) : (
+                                            aiMessages.map((msg, index) => (
+                                                <div key={index} style={{marginBottom: '16px'}}>
+                                                    <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px'}}>
+                                                        <div style={{width: '24px', height: '24px', borderRadius: '50%', background: msg.type === 'user' ? '#3b82f6' : '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px'}}>
+                                                            {msg.type === 'user' ? 'Dr' : 'AI'}
+                                                        </div>
+                                                        <span style={{fontSize: '12px', color: '#64748b'}}>{msg.time}</span>
+                                                    </div>
+                                                    <div style={{marginLeft: '32px', padding: '12px', background: msg.type === 'user' ? '#f1f5f9' : '#f0fdf4', borderRadius: '8px', whiteSpace: 'pre-line'}}>
+                                                        {msg.message}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', gap: '8px'}}>
+                                        <input
+                                            type="text"
+                                            value={currentMessage}
+                                            onChange={(e) => setCurrentMessage(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && sendAIMessage()}
+                                            placeholder="Ask about patient care, treatments..."
+                                            style={{flex: 1, padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <button onClick={sendAIMessage} className="btn btn-primary">
+                                            <i className="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* AI Settings Modal */}
+                        {showAISettings && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>⚙️ AI Medical Settings</h3>
+                                        <button onClick={() => setShowAISettings(false)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                        {Object.entries(aiSettings).map(([key, value]) => (
+                                            <div key={key} style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: '#f8fafc', borderRadius: '8px'}}>
+                                                <span style={{color: '#1e293b', textTransform: 'capitalize'}}>{key.replace(/([A-Z])/g, ' $1')}</span>
+                                                <label style={{position: 'relative', display: 'inline-block', width: '48px', height: '24px'}}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={value}
+                                                        onChange={(e) => setAiSettings({...aiSettings, [key]: e.target.checked})}
+                                                        style={{opacity: 0, width: 0, height: 0}}
+                                                    />
+                                                    <span style={{
+                                                        position: 'absolute',
+                                                        cursor: 'pointer',
+                                                        top: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        background: value ? '#10b981' : '#ccc',
+                                                        transition: '0.4s',
+                                                        borderRadius: '24px'
+                                                    }}>
+                                                        <span style={{
+                                                            position: 'absolute',
+                                                            content: '',
+                                                            height: '18px',
+                                                            width: '18px',
+                                                            left: value ? '27px' : '3px',
+                                                            bottom: '3px',
+                                                            background: 'white',
+                                                            transition: '0.4s',
+                                                            borderRadius: '50%'
+                                                        }}></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    
+                                    <div style={{marginTop: '24px', textAlign: 'center'}}>
+                                        <button onClick={() => {
+                                            setShowAISettings(false);
+                                            const settingsNotification = {
+                                                id: notifications.length + 1,
+                                                message: '✅ AI Medical Settings updated successfully!',
+                                                time: 'Just now',
+                                                type: 'success'
+                                            };
+                                            setNotifications([settingsNotification, ...notifications]);
+                                        }} className="btn btn-primary">
+                                            Save Settings
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Patient Details Modal */}
+                        {selectedPatient && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>👤 Patient Details</h3>
+                                        <button onClick={() => setSelectedPatient(null)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                        <div><strong>Name:</strong> {selectedPatient.name}</div>
+                                        <div><strong>Condition:</strong> {selectedPatient.condition}</div>
+                                        <div><strong>Last Visit:</strong> {selectedPatient.lastVisit}</div>
+                                        <div><strong>Status:</strong> <span className={`status-badge ${getStatusBadge(selectedPatient.status)}`}>{selectedPatient.status}</span></div>
+                                        <div><strong>Urgency:</strong> <span className={`status-badge ${selectedPatient.urgency === 'high' ? 'urgent' : selectedPatient.urgency === 'medium' ? 'pending' : 'active'}`}>{selectedPatient.urgency}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        try {
+            console.log('Attempting to render DoctorDashboard...');
+            ReactDOM.render(<DoctorDashboard />, document.getElementById('root'));
+            console.log('DoctorDashboard rendered successfully!');
+        } catch (error) {
+            console.error('Error rendering DoctorDashboard:', error);
+            document.getElementById('root').innerHTML = '<div style="padding: 20px; color: red;">Error loading dashboard: ' + error.message + '</div>';
+        }
+    </script>
+</body>
+</html>

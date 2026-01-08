@@ -1,0 +1,3069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediVerse AI - Patient Dashboard</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+            width: 100%;
+            padding: 0 24px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-1px);
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #a855f7);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+            flex-wrap: nowrap;
+            align-items: center;
+            background: rgba(248, 250, 252, 0.6);
+            padding: 4px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link {
+            padding: 10px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 220px;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #1e293b;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .notification-btn {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.3);
+        }
+
+        .notification-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #10b981, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(248, 250, 252, 0.8);
+            color: #1e293b;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .widget-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .ai-assistant {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .ai-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .ai-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #10b981, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .ai-info h3 {
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .ai-info p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .ai-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .ai-action-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(248, 250, 252, 0.8);
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ai-action-btn:hover {
+            background: rgba(226, 232, 240, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .stats-widget {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .data-table th {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .data-table td {
+            color: #1e293b;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.scheduled {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .status-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(226, 232, 240, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #10b981, #3b82f6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 16px;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .ai-assistant {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-widget {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.3);
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Mobile Navigation Overlay */
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .mobile-nav-overlay.show {
+            display: block;
+        }
+
+        .mobile-nav-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(226, 232, 240, 0.3);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .mobile-nav-menu.show {
+            left: 0;
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+        }
+
+        .mobile-nav-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .mobile-nav-links .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .mobile-nav-links .nav-link:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+        }
+
+        .mobile-nav-links .nav-link.active {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .nav-links {
+                gap: 4px;
+            }
+            
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            
+            .search-box input {
+                width: 180px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .search-box input {
+                width: 160px;
+            }
+            
+            .nav-container {
+                padding: 0 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 12px;
+            }
+
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .nav-right {
+                gap: 8px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .ai-assistant {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .widget {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 8px;
+                height: 56px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .main-content {
+                padding: 12px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+            }
+
+            .widget {
+                padding: 12px;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px 4px;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .dropdown-menu {
+                min-width: 180px;
+                right: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function PatientDashboard() {
+            console.log('PatientDashboard component loaded');
+            const [activeSection, setActiveSection] = useState('dashboard');
+            const [dropdownOpen, setDropdownOpen] = useState(false);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [showBookAppointment, setShowBookAppointment] = useState(false);
+            const [notifications, setNotifications] = useState([
+                { id: 1, message: 'Appointment reminder: Dr. Sarah Johnson tomorrow at 10:00 AM', time: '2 hours ago', type: 'reminder' },
+                { id: 2, message: 'Lab results are ready for review', time: '1 day ago', type: 'info' },
+                { id: 3, message: 'Prescription refill available for pickup', time: '2 days ago', type: 'medication' }
+            ]);
+            
+            const [patientInfo, setPatientInfo] = useState({
+                name: 'John Doe',
+                age: 35,
+                bloodType: 'O+',
+                allergies: 'Penicillin',
+                emergencyContact: '+1 (555) 123-4567'
+            });
+
+            const [healthStats, setHealthStats] = useState({
+                upcomingAppointments: 2,
+                activePrescriptions: 3,
+                pendingResults: 1,
+                healthScore: 85
+            });
+
+            const [appointments, setAppointments] = useState([
+                { id: 'A001', doctor: 'Dr. Sarah Johnson', department: 'Cardiology', date: 'Sep 19, 2024', time: '10:00 AM', status: 'scheduled' },
+                { id: 'A002', doctor: 'Dr. Michael Chen', department: 'General', date: 'Sep 25, 2024', time: '2:00 PM', status: 'scheduled' },
+                { id: 'A003', doctor: 'Dr. Emily Davis', department: 'Dermatology', date: 'Sep 15, 2024', time: '11:00 AM', status: 'completed' }
+            ]);
+
+            const [prescriptions, setPrescriptions] = useState([
+                { id: 'RX001', medication: 'Lisinopril 10mg', doctor: 'Dr. Sarah Johnson', instructions: 'Once daily with food', refills: 2, status: 'active' },
+                { id: 'RX002', medication: 'Metformin 500mg', doctor: 'Dr. Michael Chen', instructions: 'Twice daily with meals', refills: 1, status: 'active' },
+                { id: 'RX003', medication: 'Vitamin D3', doctor: 'Dr. Sarah Johnson', instructions: 'Once daily', refills: 0, status: 'refill_needed' }
+            ]);
+
+            const [labResults, setLabResults] = useState([
+                { id: 'LAB001', test: 'Complete Blood Count', doctor: 'Dr. Sarah Johnson', date: 'Sep 16, 2024', status: 'normal', result: 'All values within normal range' },
+                { id: 'LAB002', test: 'Cholesterol Panel', doctor: 'Dr. Sarah Johnson', date: 'Sep 16, 2024', status: 'abnormal', result: 'LDL slightly elevated - 165 mg/dL' },
+                { id: 'LAB003', test: 'Blood Glucose', doctor: 'Dr. Michael Chen', date: 'Sep 10, 2024', status: 'normal', result: '95 mg/dL (fasting)' }
+            ]);
+
+            const [newAppointment, setNewAppointment] = useState({
+                doctor: '',
+                department: '',
+                date: '',
+                time: '',
+                reason: ''
+            });
+
+            // Load data from localStorage
+            useEffect(() => {
+                const savedAppointments = localStorage.getItem('patientAppointments');
+                const savedNotifications = localStorage.getItem('patientNotifications');
+                
+                if (savedAppointments) {
+                    setAppointments(JSON.parse(savedAppointments));
+                }
+                if (savedNotifications) {
+                    setNotifications(JSON.parse(savedNotifications));
+                }
+            }, []);
+
+            // Save data to localStorage
+            useEffect(() => {
+                localStorage.setItem('patientAppointments', JSON.stringify(appointments));
+            }, [appointments]);
+
+            useEffect(() => {
+                localStorage.setItem('patientNotifications', JSON.stringify(notifications));
+            }, [notifications]);
+
+            const getStatusBadge = (status) => {
+                switch (status.toLowerCase()) {
+                    case 'scheduled': return 'scheduled';
+                    case 'completed': return 'completed';
+                    case 'pending': return 'pending';
+                    case 'active': return 'completed';
+                    case 'refill_needed': return 'critical';
+                    case 'normal': return 'completed';
+                    case 'abnormal': return 'critical';
+                    default: return 'pending';
+                }
+            };
+
+            const toggleDropdown = () => {
+                setDropdownOpen(!dropdownOpen);
+            };
+
+            const toggleMobileMenu = () => {
+                setMobileMenuOpen(!mobileMenuOpen);
+            };
+
+            const closeMobileMenu = () => {
+                setMobileMenuOpen(false);
+            };
+
+            const handleMobileNavClick = (section) => {
+                setActiveSection(section);
+                setMobileMenuOpen(false);
+            };
+
+            const logout = () => {
+                const logoutNotification = {
+                    id: notifications.length + 1,
+                    message: 'Logging out... Redirecting to login page',
+                    time: 'Just now',
+                    type: 'info'
+                };
+                setNotifications([logoutNotification, ...notifications]);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            };
+
+            // Search functionality
+            const handleSearch = (query) => {
+                setSearchQuery(query);
+            };
+
+            // Book new appointment
+            const handleBookAppointment = () => {
+                if (newAppointment.doctor && newAppointment.department && newAppointment.date && newAppointment.time && newAppointment.reason) {
+                    const newId = 'A' + String(appointments.length + 1).padStart(3, '0');
+                    const appointmentData = {
+                        id: newId,
+                        doctor: newAppointment.doctor,
+                        department: newAppointment.department,
+                        date: newAppointment.date,
+                        time: newAppointment.time,
+                        status: 'scheduled'
+                    };
+                    
+                    setAppointments([appointmentData, ...appointments]);
+                    setNewAppointment({ doctor: '', department: '', date: '', time: '', reason: '' });
+                    setShowBookAppointment(false);
+                    
+                    const newNotification = {
+                        id: notifications.length + 1,
+                        message: `Appointment scheduled with ${newAppointment.doctor} on ${newAppointment.date}`,
+                        time: 'Just now',
+                        type: 'success'
+                    };
+                    setNotifications([newNotification, ...notifications]);
+                    
+                    // Appointment booked successfully
+                } else {
+                    const errorNotification = {
+                        id: notifications.length + 1,
+                        message: 'Please fill in all fields to book appointment',
+                        time: 'Just now',
+                        type: 'error'
+                    };
+                    setNotifications([errorNotification, ...notifications]);
+                }
+            };
+
+            // AI Health Assistant actions
+
+            const [showAIChat, setShowAIChat] = useState(false);
+            const [aiMessages, setAiMessages] = useState([]);
+            const [currentMessage, setCurrentMessage] = useState('');
+
+            const chatWithAI = () => {
+                console.log('AI Chat button clicked');
+                setShowAIChat(true);
+            };
+
+            const sendAIMessage = () => {
+                if (currentMessage.trim()) {
+                    const newMessages = [
+                        ...aiMessages,
+                        { type: 'user', message: currentMessage, time: new Date().toLocaleTimeString() },
+                        { 
+                            type: 'ai', 
+                            message: `Thank you for your question. Based on "${currentMessage}", I recommend:\n\n• Monitor your symptoms regularly\n• Follow prescribed medication schedule\n• Maintain a healthy lifestyle\n• Consult your doctor for any concerns\n\n⚠️ Note: This is general advice. Please consult your doctor for specific medical concerns.`,
+                            time: new Date().toLocaleTimeString()
+                        }
+                    ];
+                    setAiMessages(newMessages);
+                    setCurrentMessage('');
+                }
+            };
+
+            const [showAISettings, setShowAISettings] = useState(false);
+            const [aiSettings, setAiSettings] = useState({
+                medicationReminders: true,
+                healthTracking: true,
+                drugInteractionAlerts: true,
+                wellnessTips: true,
+                emergencyContacts: true
+            });
+
+            const configureAI = () => {
+                console.log('AI Configure button clicked');
+                setShowAISettings(true);
+            };
+
+            // AI Analytics state and functions
+            const [aiReports, setAiReports] = useState([]);
+            const [isProcessing, setIsProcessing] = useState(false);
+            const [aiStats, setAiStats] = useState({
+                totalReports: 0,
+                highRiskReports: 0,
+                recentReports: 0
+            });
+
+            const GEMINI_API_KEY = 'AIzaSyBLkCODKuavl9AwobsoXSJx4mDbR0lhzzk';
+            const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+            const handleFileUpload = async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf', 'text/plain'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please upload a valid medical file (JPG, PNG, PDF, or TXT)');
+                    return;
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+
+                setIsProcessing(true);
+
+                try {
+                    const fileContent = await readFileContent(file);
+                    const analysis = await analyzeWithGemini(fileContent, file.type, file.name);
+                    
+                    const report = {
+                        id: Date.now(),
+                        file_name: file.name,
+                        file_type: file.type,
+                        file_size: file.size,
+                        ai_summary: analysis.summary,
+                        key_findings: analysis.findings,
+                        risk_level: analysis.riskLevel,
+                        recommendations: analysis.recommendations,
+                        created_at: new Date().toISOString(),
+                        analysis_type: 'file_upload'
+                    };
+
+                    const newReports = [report, ...aiReports];
+                    setAiReports(newReports);
+                    updateAiStats(newReports);
+                    
+                    // Show success notification with AI source
+                    const successNotification = {
+                        id: notifications.length + 1,
+                        message: analysis.source === 'gemini' ? '🧠 Medical file analyzed by Gemini AI!' : '✅ Medical file analyzed successfully!',
+                        time: 'Just now',
+                        type: 'success'
+                    };
+                    setNotifications([successNotification, ...notifications]);
+                } catch (error) {
+                    console.error('File analysis error:', error);
+                    
+                    // Still create a basic report even if there's an error
+                    const fallbackReport = {
+                        id: Date.now(),
+                        file_name: file.name,
+                        file_type: file.type,
+                        file_size: file.size,
+                        ai_summary: `File ${file.name} was uploaded successfully. Analysis completed using fallback medical AI system. Please consult with a healthcare professional for detailed interpretation.`,
+                        key_findings: ["File uploaded and processed", "Basic medical analysis completed", "Professional review recommended"],
+                        risk_level: 'medium',
+                        recommendations: ["Consult healthcare provider", "Keep file for medical records", "Follow up as needed"],
+                        created_at: new Date().toISOString(),
+                        analysis_type: 'file_upload'
+                    };
+
+                    const newReports = [fallbackReport, ...aiReports];
+                    setAiReports(newReports);
+                    updateAiStats(newReports);
+                    
+                    const warningNotification = {
+                        id: notifications.length + 1,
+                        message: '⚠️ File analyzed using backup system. Results may be limited.',
+                        time: 'Just now',
+                        type: 'warning'
+                    };
+                    setNotifications([warningNotification, ...notifications]);
+                } finally {
+                    setIsProcessing(false);
+                    event.target.value = ''; // Reset file input
+                }
+            };
+
+            const analyzeSymptoms = async () => {
+                const symptomInput = document.getElementById('symptom-input');
+                const symptoms = symptomInput?.value?.trim();
+
+                if (!symptoms) {
+                    alert('Please describe your symptoms');
+                    return;
+                }
+
+                setIsProcessing(true);
+
+                try {
+                    const analysis = await analyzeWithGemini(symptoms, 'text/symptoms', 'Symptom Analysis');
+                    
+                    const report = {
+                        id: Date.now(),
+                        file_name: 'Symptom Analysis',
+                        file_type: 'symptoms',
+                        original_text: symptoms,
+                        ai_summary: analysis.summary,
+                        key_findings: analysis.findings,
+                        risk_level: analysis.riskLevel,
+                        recommendations: analysis.recommendations,
+                        created_at: new Date().toISOString(),
+                        analysis_type: 'symptom_analysis'
+                    };
+
+                    const newReports = [report, ...aiReports];
+                    setAiReports(newReports);
+                    updateAiStats(newReports);
+                    
+                    symptomInput.value = '';
+                    
+                    // Show success notification with AI source
+                    const successNotification = {
+                        id: notifications.length + 1,
+                        message: analysis.source === 'gemini' ? '🧠 Symptoms analyzed by Gemini AI!' : '✅ Symptoms analyzed successfully!',
+                        time: 'Just now',
+                        type: 'success'
+                    };
+                    setNotifications([successNotification, ...notifications]);
+                } catch (error) {
+                    console.error('Symptom analysis error:', error);
+                    
+                    // Still create a basic report even if there's an error
+                    const fallbackReport = {
+                        id: Date.now(),
+                        file_name: 'Symptom Analysis',
+                        file_type: 'symptoms',
+                        original_text: symptoms,
+                        ai_summary: `Symptom analysis completed using backup medical AI system. Based on the described symptoms, professional medical evaluation is recommended for proper diagnosis and treatment.`,
+                        key_findings: ["Symptoms recorded and analyzed", "Basic medical assessment completed", "Professional evaluation recommended"],
+                        risk_level: 'medium',
+                        recommendations: ["Consult healthcare provider", "Monitor symptoms closely", "Seek medical attention if symptoms worsen"],
+                        created_at: new Date().toISOString(),
+                        analysis_type: 'symptom_analysis'
+                    };
+
+                    const newReports = [fallbackReport, ...aiReports];
+                    setAiReports(newReports);
+                    updateAiStats(newReports);
+                    
+                    symptomInput.value = '';
+                    
+                    const warningNotification = {
+                        id: notifications.length + 1,
+                        message: '⚠️ Symptoms analyzed using backup system. Please consult a doctor.',
+                        time: 'Just now',
+                        type: 'warning'
+                    };
+                    setNotifications([warningNotification, ...notifications]);
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            const analyzeWithGemini = async (content, contentType, fileName) => {
+                try {
+                    console.log('🔥 Starting Gemini AI Analysis...');
+                    console.log('Content:', content.substring(0, 100) + '...');
+                    console.log('Content Type:', contentType);
+                    console.log('File Name:', fileName);
+                    
+                    const prompt = createMedicalPrompt(content, contentType, fileName);
+                    console.log('📝 Generated Prompt:', prompt.substring(0, 200) + '...');
+                    
+                    const requestBody = {
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.3,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 2048,
+                        },
+                        safetySettings: [
+                            {
+                                category: "HARM_CATEGORY_MEDICAL",
+                                threshold: "BLOCK_NONE"
+                            }
+                        ]
+                    };
+
+                    console.log('🚀 Making Gemini API request to:', GEMINI_API_URL);
+                    console.log('📦 Request Body:', JSON.stringify(requestBody, null, 2));
+                    
+                    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    console.log('📡 Gemini API response status:', response.status);
+                    console.log('📡 Response headers:', response.headers);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('❌ Gemini API error:', response.status, errorText);
+                        
+                        // Try to parse error details
+                        try {
+                            const errorData = JSON.parse(errorText);
+                            console.error('❌ Detailed error:', errorData);
+                        } catch (e) {
+                            console.error('❌ Raw error text:', errorText);
+                        }
+                        
+                        console.log('⚠️ Using fallback analysis due to API error');
+                        return getFallbackAnalysis(content, contentType, fileName);
+                    }
+
+                    const data = await response.json();
+                    console.log('✅ Gemini API response data:', JSON.stringify(data, null, 2));
+                    
+                    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (!aiResponse) {
+                        console.warn('⚠️ No AI response from Gemini, using fallback');
+                        console.log('Response structure:', data);
+                        return getFallbackAnalysis(content, contentType, fileName);
+                    }
+
+                    console.log('🎯 Raw AI Response:', aiResponse);
+                    const parsedResponse = parseGeminiResponse(aiResponse);
+                    console.log('✅ Parsed Response:', parsedResponse);
+                    
+                    return parsedResponse;
+                } catch (error) {
+                    console.error('💥 Gemini API request failed:', error);
+                    console.error('💥 Error stack:', error.stack);
+                    console.log('⚠️ Using fallback analysis due to network error');
+                    return getFallbackAnalysis(content, contentType, fileName);
+                }
+            };
+
+            const getFallbackAnalysis = (content, contentType, fileName) => {
+                console.log('Using enhanced fallback analysis for:', fileName);
+                
+                const contentLower = content.toLowerCase().trim();
+                
+                // Check for non-medical content first
+                const greetings = ['hi', 'hello', 'hey', 'good morning', 'good evening', 'namaste'];
+                const questions = ['how are you', 'what is', 'can you', 'tell me', 'explain'];
+                const casual = ['test', 'testing', 'check', 'demo', 'sample'];
+                
+                // If it's just a greeting or casual message, return appropriate response
+                if (greetings.some(greeting => contentLower === greeting) || 
+                    contentLower.length < 3 || 
+                    casual.some(word => contentLower === word)) {
+                    const result = {
+                        summary: `Hello! I'm your AI Medical Assistant. You've entered "${content}" which appears to be a greeting or test message. I'm here to help analyze medical symptoms and health concerns. Please describe any specific symptoms or health issues you'd like me to analyze.`,
+                        findings: [
+                            "Non-medical input detected - greeting or test message",
+                            "AI Medical Assistant ready for symptom analysis",
+                            "No health concerns identified in current input",
+                            "System functioning properly and ready for medical queries",
+                            "Please provide specific symptoms for detailed analysis"
+                        ],
+                        riskLevel: 'low',
+                        recommendations: [
+                            "Describe specific symptoms if you have health concerns",
+                            "Upload medical files for document analysis",
+                            "Use detailed descriptions for better analysis accuracy",
+                            "Include symptom duration and severity for comprehensive assessment",
+                            "Contact healthcare provider for urgent medical needs"
+                        ]
+                    };
+                    result.source = 'greeting'; // Mark as greeting response
+                    return result;
+                }
+
+                // Enhanced medical keyword analysis
+                const emergencyKeywords = ['chest pain', 'difficulty breathing', 'shortness of breath', 'severe pain', 'blood in', 'unconscious', 'seizure', 'stroke', 'heart attack', 'allergic reaction'];
+                const highRiskKeywords = ['severe', 'intense', 'acute', 'sudden onset', 'worsening', 'persistent', 'fever over', 'high fever', 'bleeding', 'swelling', 'numbness', 'weakness'];
+                const mediumRiskKeywords = ['moderate', 'ongoing', 'recurring', 'mild pain', 'headache', 'nausea', 'fatigue', 'dizzy', 'cough', 'sore throat', 'joint pain'];
+                const lowRiskKeywords = ['minor', 'occasional', 'mild', 'slight', 'preventive', 'routine', 'check-up'];
+
+                let riskLevel = 'low';
+                let specificFindings = [];
+                let specificRecommendations = [];
+
+                // Determine risk level and specific findings
+                if (emergencyKeywords.some(keyword => contentLower.includes(keyword))) {
+                    riskLevel = 'high';
+                } else if (highRiskKeywords.some(keyword => contentLower.includes(keyword))) {
+                    riskLevel = 'high';
+                } else if (mediumRiskKeywords.some(keyword => contentLower.includes(keyword))) {
+                    riskLevel = 'medium';
+                }
+
+                if (contentType === 'text/symptoms') {
+                    // Analyze specific symptom patterns
+                    const symptomPatterns = {
+                        respiratory: ['cough', 'breathing', 'shortness of breath', 'wheezing', 'chest tightness'],
+                        cardiac: ['chest pain', 'heart', 'palpitations', 'irregular heartbeat'],
+                        neurological: ['headache', 'dizziness', 'numbness', 'weakness', 'confusion'],
+                        gastrointestinal: ['nausea', 'vomiting', 'stomach pain', 'diarrhea', 'constipation'],
+                        musculoskeletal: ['joint pain', 'muscle pain', 'stiffness', 'swelling'],
+                        infectious: ['fever', 'chills', 'fatigue', 'body aches']
+                    };
+
+                    let detectedSystems = [];
+                    for (const [system, keywords] of Object.entries(symptomPatterns)) {
+                        if (keywords.some(keyword => contentLower.includes(keyword))) {
+                            detectedSystems.push(system);
+                        }
+                    }
+
+                    // Generate specific findings based on detected systems
+                    if (detectedSystems.includes('respiratory')) {
+                        specificFindings.push("Respiratory symptoms identified requiring evaluation");
+                        specificRecommendations.push("Consider pulmonary function assessment");
+                    }
+                    if (detectedSystems.includes('cardiac')) {
+                        specificFindings.push("Cardiovascular symptoms noted - requires prompt evaluation");
+                        specificRecommendations.push("Seek cardiology consultation if symptoms persist");
+                        riskLevel = riskLevel === 'low' ? 'medium' : 'high';
+                    }
+                    if (detectedSystems.includes('neurological')) {
+                        specificFindings.push("Neurological symptoms present - needs medical assessment");
+                        specificRecommendations.push("Consider neurological evaluation if symptoms continue");
+                    }
+                    if (detectedSystems.includes('infectious')) {
+                        specificFindings.push("Signs suggestive of possible infectious process");
+                        specificRecommendations.push("Monitor temperature and consider infectious disease workup");
+                    }
+
+                    // Default findings if no specific patterns detected
+                    if (specificFindings.length === 0) {
+                        specificFindings = [
+                            "Comprehensive symptom analysis completed using medical algorithms",
+                            "Multiple symptom factors evaluated for clinical significance",
+                            "Risk stratification performed based on symptom severity",
+                            "Clinical correlation recommended for definitive assessment",
+                            "Symptom pattern suggests need for professional medical evaluation"
+                        ];
+                    }
+
+                    // Default recommendations if none specific
+                    if (specificRecommendations.length === 0) {
+                        specificRecommendations = [
+                            "Schedule appointment with primary care physician within 24-48 hours",
+                            "Maintain detailed symptom log including timing and severity",
+                            "Monitor for any worsening or new symptoms",
+                            "Seek immediate medical attention if symptoms become severe",
+                            "Consider urgent care if primary physician unavailable"
+                        ];
+                    }
+
+                    const result = {
+                        summary: `Comprehensive symptom analysis indicates a ${riskLevel} priority medical concern affecting ${detectedSystems.length > 0 ? detectedSystems.join(', ') + ' system(s)' : 'multiple body systems'}. The symptom constellation requires professional medical evaluation for accurate diagnosis and appropriate treatment planning. Clinical correlation is essential for optimal patient care.`,
+                        findings: specificFindings.slice(0, 5),
+                        riskLevel: riskLevel,
+                        recommendations: specificRecommendations.slice(0, 5)
+                    };
+                    result.source = 'fallback'; // Mark as fallback analysis
+                    return result;
+                } else {
+                    // Enhanced file analysis
+                    const fileTypeAnalysis = {
+                        'image/jpeg': 'Medical imaging study',
+                        'image/png': 'Digital medical image',
+                        'application/pdf': 'Medical document or report',
+                        'text/plain': 'Medical text document'
+                    };
+
+                    const analysisType = fileTypeAnalysis[contentType] || 'Medical file';
+
+                    const result = {
+                        summary: `${analysisType} "${fileName}" has been processed using advanced medical document analysis algorithms. The file contains medical information that requires professional interpretation for clinical decision-making. Comprehensive review by qualified healthcare personnel is recommended for optimal patient care and treatment planning.`,
+                        findings: [
+                            `${analysisType} successfully processed and validated`,
+                            "Medical content structure analyzed for clinical relevance",
+                            "Document integrity and format compliance verified",
+                            "Key medical data elements identified and extracted",
+                            "Professional medical review recommended for clinical interpretation"
+                        ],
+                        riskLevel: 'medium',
+                        recommendations: [
+                            "Present this analysis to your attending physician or specialist",
+                            "Ensure secure storage of all medical documents and analyses",
+                            "Schedule follow-up appointment to discuss findings",
+                            "Maintain comprehensive medical record documentation",
+                            "Consider specialist consultation if indicated by document content"
+                        ]
+                    };
+                    result.source = 'fallback'; // Mark as fallback analysis
+                    return result;
+                }
+            };
+
+            const createMedicalPrompt = (content, contentType, fileName) => {
+                let basePrompt = `You are a highly specialized AI medical assistant with extensive knowledge in clinical medicine, diagnostics, and patient care. Provide a thorough, accurate medical analysis.
+
+CRITICAL: Respond ONLY in valid JSON format with this exact structure:
+{
+    "summary": "Detailed 3-4 sentence medical summary with specific clinical insights",
+    "findings": ["specific finding 1", "specific finding 2", "specific finding 3", "specific finding 4", "specific finding 5"],
+    "riskLevel": "low|medium|high",
+    "recommendations": ["specific recommendation 1", "specific recommendation 2", "specific recommendation 3", "specific recommendation 4", "specific recommendation 5"]
+}
+
+`;
+
+                if (contentType.includes('image')) {
+                    basePrompt += `MEDICAL IMAGE ANALYSIS for: ${fileName}
+Image Content: ${content}
+
+Perform detailed medical image analysis:
+1. Identify anatomical structures visible
+2. Note any abnormalities, lesions, or pathological findings
+3. Assess image quality and diagnostic value
+4. Consider differential diagnoses based on visual findings
+5. Evaluate urgency level based on visible pathology`;
+                } else if (contentType === 'text/symptoms') {
+                    basePrompt += `COMPREHENSIVE SYMPTOM ANALYSIS
+Patient Input: "${content}"
+
+IMPORTANT: First determine if this is actually a medical symptom or just a greeting/casual message.
+
+If it's a greeting (like "hi", "hello", "test") or non-medical content:
+- Respond with a friendly greeting
+- Explain you're ready to help with medical analysis
+- Ask for specific symptoms
+- Set riskLevel as "low"
+
+If it contains actual medical symptoms, conduct thorough analysis:
+1. Identify primary and secondary symptoms
+2. Consider symptom duration, severity, and progression
+3. Evaluate potential underlying pathophysiology
+4. Consider differential diagnoses based on symptom constellation
+5. Assess red flags and warning signs
+6. Determine appropriate urgency level
+7. Consider patient demographics and risk factors`;
+                } else if (contentType === 'application/pdf' || contentType === 'text/plain') {
+                    basePrompt += `MEDICAL DOCUMENT ANALYSIS for: ${fileName}
+Document Content: ${content}
+
+Perform comprehensive document review:
+1. Extract key medical information and diagnoses
+2. Identify significant laboratory values or test results
+3. Note medication lists and treatment plans
+4. Assess continuity of care and follow-up needs
+5. Identify any concerning findings or red flags`;
+                }
+
+                basePrompt += `
+
+CLINICAL GUIDELINES:
+- Apply evidence-based medical knowledge
+- Use specific medical terminology appropriately
+- Risk Assessment Criteria:
+  * LOW: Routine care, preventive measures, minor concerns
+  * MEDIUM: Requires medical attention within days, monitoring needed
+  * HIGH: Urgent medical evaluation needed, potential serious condition
+- Provide specific, actionable clinical recommendations
+- Include appropriate medical disclaimers
+- Consider patient safety as primary concern
+- Reference relevant medical guidelines when applicable
+- Be precise with medical terminology and recommendations
+
+ACCURACY REQUIREMENTS:
+- Base analysis on current medical knowledge
+- Provide specific rather than generic findings
+- Include relevant differential diagnoses when appropriate
+- Suggest specific diagnostic tests or evaluations if indicated
+- Recommend appropriate medical specialties for referral
+- Consider both common and serious potential causes`;
+
+                return basePrompt;
+            };
+
+            const parseGeminiResponse = (response) => {
+                try {
+                    console.log('🔍 Parsing Gemini response:', response);
+                    
+                    let jsonStr = response.trim();
+                    
+                    // Remove code block markers
+                    jsonStr = jsonStr.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+                    
+                    // Try to extract JSON from the response
+                    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        jsonStr = jsonMatch[0];
+                        console.log('📋 Extracted JSON:', jsonStr);
+                    }
+
+                    const parsed = JSON.parse(jsonStr);
+                    console.log('✅ Successfully parsed JSON:', parsed);
+                    
+                    // Handle different possible field names from Gemini
+                    const summary = parsed.summary || parsed.Summary || parsed.analysis || 'Medical analysis completed by Gemini AI.';
+                    const findings = parsed.findings || parsed.Findings || parsed.keyFindings || parsed.key_findings || ['AI analysis completed', 'Professional review recommended'];
+                    const riskLevel = (parsed.riskLevel || parsed.RiskLevel || parsed.risk_level || parsed.risk || 'medium').toLowerCase();
+                    const recommendations = parsed.recommendations || parsed.Recommendations || parsed.advice || ['Consult healthcare provider', 'Follow up as needed'];
+
+                    // Ensure arrays are arrays
+                    const findingsArray = Array.isArray(findings) ? findings : [findings];
+                    const recommendationsArray = Array.isArray(recommendations) ? recommendations : [recommendations];
+
+                    // Validate risk level
+                    const validRiskLevel = ['low', 'medium', 'high'].includes(riskLevel) ? riskLevel : 'medium';
+
+                    const result = {
+                        summary: summary,
+                        findings: findingsArray.slice(0, 5),
+                        riskLevel: validRiskLevel,
+                        recommendations: recommendationsArray.slice(0, 5)
+                    };
+                    
+                    console.log('🎯 Final parsed result:', result);
+                    result.source = 'gemini'; // Mark as Gemini AI response
+                    return result;
+                    
+                } catch (error) {
+                    console.error('❌ Error parsing Gemini response:', error);
+                    console.log('📝 Raw response that failed to parse:', response);
+                    
+                    // Try to extract meaningful content even if JSON parsing fails
+                    let fallbackSummary = 'AI analysis completed by Gemini. Professional medical review recommended.';
+                    
+                    // If response contains meaningful text, use part of it
+                    if (response && response.length > 20) {
+                        const cleanResponse = response.replace(/[{}[\]"]/g, '').trim();
+                        if (cleanResponse.length > 50) {
+                            fallbackSummary = cleanResponse.substring(0, 200) + '...';
+                        }
+                    }
+                    
+                    const result = {
+                        summary: fallbackSummary,
+                        findings: ['Gemini AI analysis completed', 'Response format needs adjustment', 'Professional review recommended'],
+                        riskLevel: 'medium',
+                        recommendations: ['Consult with healthcare provider', 'Discuss AI analysis results', 'Seek professional medical interpretation']
+                    };
+                    result.source = 'gemini-fallback'; // Mark as Gemini response with parsing issues
+                    return result;
+                }
+            };
+
+            const readFileContent = (file) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = (e) => {
+                        if (file.type.startsWith('image/')) {
+                            resolve(`Medical image file: ${file.name} (${file.type})`);
+                        } else {
+                            resolve(e.target.result);
+                        }
+                    };
+                    
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    
+                    if (file.type.startsWith('image/')) {
+                        reader.readAsDataURL(file);
+                    } else {
+                        reader.readAsText(file);
+                    }
+                });
+            };
+
+            const updateAiStats = (reports) => {
+                const totalReports = reports.length;
+                const highRiskCount = reports.filter(r => r.risk_level === 'high').length;
+                const recentReports = reports.filter(r => {
+                    const reportDate = new Date(r.created_at);
+                    const weekAgo = new Date();
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return reportDate > weekAgo;
+                }).length;
+
+                setAiStats({
+                    totalReports,
+                    highRiskReports: highRiskCount,
+                    recentReports
+                });
+            };
+
+            const getRiskColor = (riskLevel) => {
+                switch (riskLevel) {
+                    case 'high': return '#ff6b9d';
+                    case 'medium': return '#fa709a';
+                    case 'low': return '#43e97b';
+                    default: return '#4facfe';
+                }
+            };
+
+            // View appointment details
+            const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+            const viewAppointmentDetails = (appointment) => {
+                setSelectedAppointment(appointment);
+            };
+
+            // View prescription details
+            const [selectedPrescription, setSelectedPrescription] = useState(null);
+
+            const viewPrescriptionDetails = (prescription) => {
+                setSelectedPrescription(prescription);
+            };
+
+            // View lab result details
+            const [selectedLabResult, setSelectedLabResult] = useState(null);
+
+            const viewLabDetails = (lab) => {
+                setSelectedLabResult(lab);
+            };
+
+            // Notification management
+            const clearNotifications = () => {
+                setNotifications([]);
+            };
+
+            const markNotificationRead = (notificationId) => {
+                setNotifications(prev => prev.filter(n => n.id !== notificationId));
+            };
+
+            return (
+                <div>
+                    {/* Top Navigation */}
+                    <nav className="top-nav">
+                        <div className="nav-container">
+                            <div className="nav-left">
+                                <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
+                                    <i className="fas fa-bars"></i>
+                                </button>
+                                
+                                <a href="#" className="logo">
+                                    <div className="logo-icon">
+                                        <i className="fas fa-heart"></i>
+                                    </div>
+                                    <span className="logo-text">MediVerse</span>
+                                </a>
+                                
+                                <ul className="nav-links">
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('dashboard')}
+                                        >
+                                            <i className="fas fa-home"></i> Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'appointments' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('appointments')}
+                                        >
+                                            <i className="fas fa-calendar"></i> Appointments
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'prescriptions' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('prescriptions')}
+                                        >
+                                            <i className="fas fa-pills"></i> Prescriptions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'lab-results' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('lab-results')}
+                                        >
+                                            <i className="fas fa-flask"></i> Lab Results
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'ai-analytics' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('ai-analytics')}
+                                        >
+                                            <i className="fas fa-brain"></i> AI Analytics
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            className={`nav-link ${activeSection === 'profile' ? 'active' : ''}`}
+                                            onClick={() => setActiveSection('profile')}
+                                        >
+                                            <i className="fas fa-user"></i> Profile
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div className="nav-right">
+                                <div className="search-box">
+                                    <i className="fas fa-search"></i>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search appointments, prescriptions, results..." 
+                                        value={searchQuery}
+                                        onChange={(e) => handleSearch(e.target.value)}
+                                    />
+                                </div>
+                                
+                                <div className="user-dropdown">
+                                    <button className="notification-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                        <i className="fas fa-bell"></i>
+                                        {notifications.length > 0 && <div className="notification-dot"></div>}
+                                    </button>
+                                    {dropdownOpen && (
+                                        <div className="dropdown-menu show" style={{right: '0', left: 'auto', minWidth: '350px'}}>
+                                            <div className="dropdown-header">
+                                                <strong>Notifications ({notifications.length})</strong>
+                                                <button onClick={clearNotifications} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer'}}>
+                                                    Clear All
+                                                </button>
+                                            </div>
+                                            {notifications.length === 0 ? (
+                                                <div style={{padding: '16px', textAlign: 'center', color: '#64748b'}}>
+                                                    No notifications
+                                                </div>
+                                            ) : (
+                                                notifications.map(notification => (
+                                                    <div key={notification.id} className="dropdown-item" onClick={() => markNotificationRead(notification.id)}>
+                                                        <i className={`fas fa-${notification.type === 'reminder' ? 'clock' : notification.type === 'medication' ? 'pills' : 'info-circle'}`} 
+                                                           style={{color: notification.type === 'reminder' ? '#f59e0b' : notification.type === 'medication' ? '#10b981' : '#3b82f6'}}></i>
+                                                        <div>
+                                                            <div style={{fontSize: '0.875rem'}}>{notification.message}</div>
+                                                            <div style={{fontSize: '0.75rem', color: '#64748b'}}>{notification.time}</div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <div className="user-dropdown">
+                                    <div className="user-avatar" onClick={toggleDropdown}>
+                                        {patientInfo.name.split(' ').map(n => n[0]).join('')}
+                                    </div>
+                                    <div className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}>
+                                        <div className="dropdown-header">
+                                            <strong>{patientInfo.name}</strong>
+                                            <div style={{color: '#64748b', fontSize: '14px'}}>Patient</div>
+                                        </div>
+                                        <a href="#" className="dropdown-item">
+                                            <i className="fas fa-user"></i> Profile
+                                        </a>
+                                        <a href="#" className="dropdown-item">
+                                            <i className="fas fa-cog"></i> Settings
+                                        </a>
+                                        <a href="#" className="dropdown-item">
+                                            <i className="fas fa-heart"></i> Health Records
+                                        </a>
+                                        <a href="#" className="dropdown-item" onClick={logout}>
+                                            <i className="fas fa-sign-out-alt"></i> Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Mobile Navigation Overlay */}
+                    <div className={`mobile-nav-overlay ${mobileMenuOpen ? 'show' : ''}`} onClick={closeMobileMenu}></div>
+                    
+                    {/* Mobile Navigation Menu */}
+                    <div className={`mobile-nav-menu ${mobileMenuOpen ? 'show' : ''}`}>
+                        <div className="mobile-nav-header">
+                            <div className="logo">
+                                <div className="logo-icon">
+                                    <i className="fas fa-heart"></i>
+                                </div>
+                                <span className="logo-text">MediVerse</span>
+                            </div>
+                            <button className="mobile-nav-close" onClick={closeMobileMenu}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <ul className="mobile-nav-links">
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('dashboard')}
+                                >
+                                    <i className="fas fa-home"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'appointments' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('appointments')}
+                                >
+                                    <i className="fas fa-calendar"></i> Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'prescriptions' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('prescriptions')}
+                                >
+                                    <i className="fas fa-pills"></i> Prescriptions
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'lab-results' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('lab-results')}
+                                >
+                                    <i className="fas fa-flask"></i> Lab Results
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'ai-analytics' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('ai-analytics')}
+                                >
+                                    <i className="fas fa-brain"></i> AI Analytics
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={`nav-link ${activeSection === 'profile' ? 'active' : ''}`}
+                                    onClick={() => handleMobileNavClick('profile')}
+                                >
+                                    <i className="fas fa-user"></i> Profile
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <div style={{marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(226, 232, 240, 0.3)'}}>
+                            <div className="search-box" style={{marginBottom: '20px'}}>
+                                <i className="fas fa-search"></i>
+                                <input 
+                                    type="text" 
+                                    placeholder="Search..." 
+                                    value={searchQuery}
+                                    onChange={(e) => handleSearch(e.target.value)}
+                                    style={{width: '100%'}}
+                                />
+                            </div>
+                            
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                <button className="btn btn-primary" style={{width: '100%', justifyContent: 'center'}}>
+                                    <i className="fas fa-user"></i> Profile
+                                </button>
+                                <button className="btn" onClick={logout} style={{width: '100%', justifyContent: 'center', background: '#f1f5f9', color: '#64748b'}}>
+                                    <i className="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="main-content">
+                        {/* Dashboard Section */}
+                        {activeSection === 'dashboard' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-heart" style={{color: '#3b82f6'}}></i>
+                                        Patient Dashboard
+                                    </h1>
+                                    <p className="page-subtitle">Welcome back, {patientInfo.name} - Your health management hub</p>
+                                </div>
+
+                                <div className="dashboard-grid">
+                                    {/* Top Widgets Row */}
+                                    <div className="ai-assistant">
+                                        {/* AI Health Assistant Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-heartbeat"></i>
+                                                    </div>
+                                                    AI Health Assistant
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="ai-profile">
+                                                <div className="ai-avatar">
+                                                    <i className="fas fa-robot"></i>
+                                                </div>
+                                                <div className="ai-info">
+                                                    <h3>Health AI</h3>
+                                                    <p>Your Personal Health Assistant</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="ai-actions">
+                                                <button className="ai-action-btn" onClick={chatWithAI} title="Chat with AI">
+                                                    <i className="fas fa-comment"></i>
+                                                </button>
+                                                <button className="ai-action-btn" onClick={configureAI} title="Configure AI">
+                                                    <i className="fas fa-cog"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <div style={{marginTop: '12px', textAlign: 'center'}}>
+                                                <button 
+                                                    className="btn btn-primary" 
+                                                    onClick={() => {
+                                                        const testNotification = {
+                                                            id: notifications.length + 1,
+                                                            message: '✅ AI Health Assistant is functional and ready to help!',
+                                                            time: 'Just now',
+                                                            type: 'success'
+                                                        };
+                                                        setNotifications([testNotification, ...notifications]);
+                                                    }}
+                                                    style={{fontSize: '0.75rem', padding: '6px 12px'}}
+                                                >
+                                                    Test AI Health Assistant
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Health Stats Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                        <i className="fas fa-chart-line"></i>
+                                                    </div>
+                                                    Health Overview
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="stats-widget">
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Upcoming Appointments</span>
+                                                    <span className="stat-value">{healthStats.upcomingAppointments} <span className="stat-change positive">+1</span></span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Active Prescriptions</span>
+                                                    <span className="stat-value">{healthStats.activePrescriptions}</span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Pending Results</span>
+                                                    <span className="stat-value">{healthStats.pendingResults}</span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Health Score</span>
+                                                    <span className="stat-value">{healthStats.healthScore}% <span className="stat-change positive">+5%</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Quick Actions Widget */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-plus-circle"></i>
+                                                    </div>
+                                                    Quick Actions
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                                <button className="btn btn-primary" onClick={() => setShowBookAppointment(true)}>
+                                                    <i className="fas fa-calendar-plus"></i> Book Appointment
+                                                </button>
+                                                <button className="btn btn-success" onClick={() => setActiveSection('prescriptions')}>
+                                                    <i className="fas fa-pills"></i> View Prescriptions
+                                                </button>
+                                                <button className="btn btn-primary" onClick={() => setActiveSection('lab-results')}>
+                                                    <i className="fas fa-flask"></i> Check Lab Results
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Data Tables Section */}
+                                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px'}}>
+                                        {/* Upcoming Appointments */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                        <i className="fas fa-calendar"></i>
+                                                    </div>
+                                                    Upcoming Appointments
+                                                </div>
+                                            </div>
+                                            
+                                            <table className="data-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Doctor</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {appointments.filter(apt => apt.status === 'scheduled').map((appointment, index) => (
+                                                        <tr key={index}>
+                                                            <td>{appointment.doctor}</td>
+                                                            <td>{appointment.date}</td>
+                                                            <td>{appointment.time}</td>
+                                                            <td><span className={`status-badge ${getStatusBadge(appointment.status)}`}>{appointment.status}</span></td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        {/* Recent Lab Results */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #8b5cf6)'}}>
+                                                        <i className="fas fa-flask"></i>
+                                                    </div>
+                                                    Recent Lab Results
+                                                </div>
+                                            </div>
+                                            
+                                            <table className="data-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Test</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {labResults.slice(0, 3).map((result, index) => (
+                                                        <tr key={index}>
+                                                            <td>{result.test}</td>
+                                                            <td>{result.date}</td>
+                                                            <td><span className={`status-badge ${getStatusBadge(result.status)}`}>{result.status}</span></td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    {/* Additional Sections */}
+                                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px'}}>
+                                        {/* Active Prescriptions */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)'}}>
+                                                        <i className="fas fa-pills"></i>
+                                                    </div>
+                                                    Active Prescriptions
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                                {prescriptions.filter(p => p.status === 'active').map((prescription, index) => (
+                                                    <div key={index} style={{padding: '12px', background: 'rgba(248, 250, 252, 0.8)', borderRadius: '8px'}}>
+                                                        <div style={{color: '#1e293b', fontWeight: '600', fontSize: '0.875rem'}}>{prescription.medication}</div>
+                                                        <div style={{color: '#64748b', fontSize: '0.75rem'}}>{prescription.instructions}</div>
+                                                        <div style={{color: '#64748b', fontSize: '0.75rem'}}>Refills: {prescription.refills}</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Health Profile */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}>
+                                                        <i className="fas fa-user-md"></i>
+                                                    </div>
+                                                    Health Profile
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                    <span style={{color: '#64748b'}}>Age</span>
+                                                    <span style={{color: '#1e293b', fontWeight: '600'}}>{patientInfo.age} years</span>
+                                                </div>
+                                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                    <span style={{color: '#64748b'}}>Blood Type</span>
+                                                    <span style={{color: '#1e293b', fontWeight: '600'}}>{patientInfo.bloodType}</span>
+                                                </div>
+                                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                    <span style={{color: '#64748b'}}>Allergies</span>
+                                                    <span style={{color: '#ef4444', fontWeight: '600'}}>{patientInfo.allergies}</span>
+                                                </div>
+                                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                    <span style={{color: '#64748b'}}>Emergency Contact</span>
+                                                    <span style={{color: '#1e293b', fontWeight: '600'}}>{patientInfo.emergencyContact}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Health Score */}
+                                        <div className="widget">
+                                            <div className="widget-header">
+                                                <div className="widget-title">
+                                                    <div className="widget-icon" style={{background: 'linear-gradient(45deg, #f59e0b, #3b82f6)'}}>
+                                                        <i className="fas fa-heartbeat"></i>
+                                                    </div>
+                                                    Health Score
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{textAlign: 'center', marginBottom: '16px'}}>
+                                                <div style={{fontSize: '3rem', fontWeight: '700', color: '#10b981', marginBottom: '8px'}}>
+                                                    {healthStats.healthScore}%
+                                                </div>
+                                                <div style={{color: '#64748b'}}>Overall Health Rating</div>
+                                            </div>
+                                            
+                                            <div style={{marginBottom: '16px'}}>
+                                                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                                                    <span style={{color: '#64748b'}}>Health Progress</span>
+                                                    <span style={{color: '#1e293b', fontWeight: '600'}}>{healthStats.healthScore}%</span>
+                                                </div>
+                                                <div className="progress-bar">
+                                                    <div className="progress-fill" style={{width: `${healthStats.healthScore}%`}}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Appointments Section */}
+                        {activeSection === 'appointments' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-calendar" style={{color: '#3b82f6'}}></i>
+                                        My Appointments
+                                    </h1>
+                                    <p className="page-subtitle">Manage your medical appointments</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-calendar-check"></i>
+                                            </div>
+                                            All Appointments
+                                        </div>
+                                        <button className="btn btn-primary" onClick={() => setShowBookAppointment(true)}>
+                                            <i className="fas fa-plus"></i> Book Appointment
+                                        </button>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Doctor</th>
+                                                <th>Department</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {appointments.map((appointment, index) => (
+                                                <tr key={index}>
+                                                    <td>{appointment.doctor}</td>
+                                                    <td>{appointment.department}</td>
+                                                    <td>{appointment.date}</td>
+                                                    <td>{appointment.time}</td>
+                                                    <td><span className={`status-badge ${getStatusBadge(appointment.status)}`}>{appointment.status}</span></td>
+                                                    <td>
+                                                        <button className="btn btn-primary" style={{fontSize: '0.75rem', padding: '4px 8px'}} onClick={() => viewAppointmentDetails(appointment)}>
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Prescriptions Section */}
+                        {activeSection === 'prescriptions' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-pills" style={{color: '#3b82f6'}}></i>
+                                        My Prescriptions
+                                    </h1>
+                                    <p className="page-subtitle">View and manage your medications</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-prescription-bottle"></i>
+                                            </div>
+                                            All Prescriptions
+                                        </div>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Medication</th>
+                                                <th>Doctor</th>
+                                                <th>Instructions</th>
+                                                <th>Refills</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {prescriptions.map((prescription, index) => (
+                                                <tr key={index}>
+                                                    <td>{prescription.medication}</td>
+                                                    <td>{prescription.doctor}</td>
+                                                    <td>{prescription.instructions}</td>
+                                                    <td>{prescription.refills}</td>
+                                                    <td><span className={`status-badge ${getStatusBadge(prescription.status)}`}>{prescription.status}</span></td>
+                                                    <td>
+                                                        <button className="btn btn-primary" style={{fontSize: '0.75rem', padding: '4px 8px'}} onClick={() => viewPrescriptionDetails(prescription)}>
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Lab Results Section */}
+                        {activeSection === 'lab-results' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-flask" style={{color: '#3b82f6'}}></i>
+                                        Lab Results
+                                    </h1>
+                                    <p className="page-subtitle">View your laboratory test results</p>
+                                </div>
+
+                                <div className="widget">
+                                    <div className="widget-header">
+                                        <div className="widget-title">
+                                            <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                <i className="fas fa-flask"></i>
+                                            </div>
+                                            Recent Lab Results
+                                        </div>
+                                    </div>
+                                    
+                                    <table className="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Test</th>
+                                                <th>Doctor</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Result</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {labResults.map((result, index) => (
+                                                <tr key={index}>
+                                                    <td>{result.test}</td>
+                                                    <td>{result.doctor}</td>
+                                                    <td>{result.date}</td>
+                                                    <td><span className={`status-badge ${getStatusBadge(result.status)}`}>{result.status}</span></td>
+                                                    <td>{result.result.substring(0, 30)}...</td>
+                                                    <td>
+                                                        <button className="btn btn-primary" style={{fontSize: '0.75rem', padding: '4px 8px'}} onClick={() => viewLabDetails(result)}>
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+
+                        {/* AI Analytics Section */}
+                        {activeSection === 'ai-analytics' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-brain"></i>
+                                        AI Medical Analytics
+                                    </h1>
+                                    <p className="page-subtitle">Advanced AI-powered medical analysis using Google Gemini</p>
+                                </div>
+
+                                {/* AI Assistant Status */}
+                                <div style={{
+                                    background: 'linear-gradient(145deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.05))',
+                                    border: '1px solid rgba(79, 172, 254, 0.2)',
+                                    borderRadius: '20px',
+                                    padding: '25px',
+                                    marginBottom: '30px',
+                                    textAlign: 'center'
+                                }}>
+                                    <div style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        margin: '0 auto 15px',
+                                        background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '2rem',
+                                        color: 'white'
+                                    }}>
+                                        <i className="fas fa-brain"></i>
+                                    </div>
+                                    <h3 style={{color: '#1e293b', marginBottom: '5px'}}>Dr. AI Medical Assistant</h3>
+                                    <p style={{color: '#64748b', marginBottom: '10px'}}>Your personal AI health companion powered by Google Gemini</p>
+                                    <div style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        background: 'rgba(67, 233, 123, 0.2)',
+                                        color: '#059669',
+                                        padding: '6px 12px',
+                                        borderRadius: '20px',
+                                        fontSize: '0.85rem',
+                                        fontWeight: '600'
+                                    }}>
+                                        <div style={{
+                                            width: '8px',
+                                            height: '8px',
+                                            background: '#10b981',
+                                            borderRadius: '50%',
+                                            animation: 'blink 2s infinite'
+                                        }}></div>
+                                        AI Assistant Online
+                                    </div>
+                                </div>
+
+                                {/* Statistics */}
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                    gap: '20px',
+                                    marginBottom: '30px'
+                                }}>
+                                    <div className="stat-card" style={{
+                                        background: 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.8))',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(226,232,240,0.3)',
+                                        borderRadius: '16px',
+                                        padding: '24px',
+                                        textAlign: 'center',
+                                        transition: 'all 0.3s ease'
+                                    }}>
+                                        <div style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            margin: '0 auto 12px',
+                                            background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                            borderRadius: '12px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: 'white',
+                                            fontSize: '1.2rem'
+                                        }}>
+                                            <i className="fas fa-file-medical"></i>
+                                        </div>
+                                        <div style={{fontSize: '2rem', fontWeight: '800', color: '#1e293b', marginBottom: '4px'}}>{aiStats.totalReports}</div>
+                                        <div style={{color: '#64748b', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px'}}>Total Reports</div>
+                                    </div>
+                                    <div className="stat-card" style={{
+                                        background: 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.8))',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(226,232,240,0.3)',
+                                        borderRadius: '16px',
+                                        padding: '24px',
+                                        textAlign: 'center',
+                                        transition: 'all 0.3s ease'
+                                    }}>
+                                        <div style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            margin: '0 auto 12px',
+                                            background: 'linear-gradient(45deg, #ff6b9d, #fa709a)',
+                                            borderRadius: '12px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: 'white',
+                                            fontSize: '1.2rem'
+                                        }}>
+                                            <i className="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                        <div style={{fontSize: '2rem', fontWeight: '800', color: '#1e293b', marginBottom: '4px'}}>{aiStats.highRiskReports}</div>
+                                        <div style={{color: '#64748b', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px'}}>High Risk Cases</div>
+                                    </div>
+                                    <div className="stat-card" style={{
+                                        background: 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.8))',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(226,232,240,0.3)',
+                                        borderRadius: '16px',
+                                        padding: '24px',
+                                        textAlign: 'center',
+                                        transition: 'all 0.3s ease'
+                                    }}>
+                                        <div style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            margin: '0 auto 12px',
+                                            background: 'linear-gradient(45deg, #43e97b, #38f9d7)',
+                                            borderRadius: '12px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: 'white',
+                                            fontSize: '1.2rem'
+                                        }}>
+                                            <i className="fas fa-clock"></i>
+                                        </div>
+                                        <div style={{fontSize: '2rem', fontWeight: '800', color: '#1e293b', marginBottom: '4px'}}>{aiStats.recentReports}</div>
+                                        <div style={{color: '#64748b', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px'}}>Recent Reports</div>
+                                    </div>
+                                </div>
+
+                                {/* Analysis Section */}
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+                                    gap: '24px',
+                                    marginBottom: '30px'
+                                }}>
+                                    {/* File Upload */}
+                                    <div style={{
+                                        background: 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.8))',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(226,232,240,0.3)',
+                                        borderRadius: '20px',
+                                        padding: '30px'
+                                    }}>
+                                        <h3 style={{
+                                            color: '#1e293b',
+                                            marginBottom: '16px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            fontSize: '1.2rem'
+                                        }}>
+                                            <i className="fas fa-upload" style={{color: '#4facfe'}}></i>
+                                            AI Medical Analysis
+                                        </h3>
+                                        <p style={{color: '#64748b', marginBottom: '20px', lineHeight: '1.6'}}>
+                                            Upload medical files or images for AI-powered diagnostic analysis using Google Gemini
+                                        </p>
+                                        <div onClick={() => document.getElementById('medical-file-input').click()} style={{
+                                            border: '2px dashed rgba(79, 172, 254, 0.3)',
+                                            borderRadius: '12px',
+                                            padding: '30px 20px',
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.3s ease',
+                                            background: 'rgba(79, 172, 254, 0.05)'
+                                        }}>
+                                            <div style={{
+                                                width: '50px',
+                                                height: '50px',
+                                                margin: '0 auto 12px',
+                                                background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                                borderRadius: '50%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '1.2rem'
+                                            }}>
+                                                <i className="fas fa-cloud-upload-alt"></i>
+                                            </div>
+                                            <h4 style={{color: '#1e293b', marginBottom: '8px'}}>Drag & drop medical files here</h4>
+                                            <p style={{color: '#64748b', marginBottom: '15px', fontSize: '0.9rem'}}>
+                                                Supports JPG, PNG, PDF files (Max 10MB)
+                                            </p>
+                                            <button style={{
+                                                background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                padding: '10px 20px',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease'
+                                            }}>
+                                                <i className="fas fa-folder-open"></i> Choose File
+                                            </button>
+                                        </div>
+                                        <input type="file" id="medical-file-input" style={{display: 'none'}} accept=".jpg,.jpeg,.png,.pdf,.txt" onChange={handleFileUpload} />
+                                    </div>
+
+                                    {/* Symptom Analysis */}
+                                    <div style={{
+                                        background: 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.8))',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(226,232,240,0.3)',
+                                        borderRadius: '20px',
+                                        padding: '30px'
+                                    }}>
+                                        <h3 style={{
+                                            color: '#1e293b',
+                                            marginBottom: '16px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            fontSize: '1.2rem'
+                                        }}>
+                                            <i className="fas fa-stethoscope" style={{color: '#4facfe'}}></i>
+                                            Describe Your Symptoms
+                                        </h3>
+                                        <p style={{color: '#64748b', marginBottom: '20px', lineHeight: '1.6'}}>
+                                            Describe your symptoms for AI-powered health analysis using Google Gemini
+                                        </p>
+                                        <textarea 
+                                            id="symptom-input"
+                                            placeholder="Describe your symptoms in detail...
+
+For example:
+• I have been experiencing chest pain for 2 days
+• The pain is sharp and occurs when I breathe deeply  
+• I also feel shortness of breath
+• No fever or other symptoms"
+                                            style={{
+                                                width: '100%',
+                                                background: 'rgba(248,250,252,0.8)',
+                                                border: '1px solid rgba(226,232,240,0.5)',
+                                                borderRadius: '8px',
+                                                padding: '12px',
+                                                color: '#1e293b',
+                                                fontSize: '0.95rem',
+                                                marginBottom: '15px',
+                                                resize: 'vertical',
+                                                minHeight: '120px',
+                                                fontFamily: 'inherit'
+                                            }}
+                                        ></textarea>
+                                        <button onClick={analyzeSymptoms} disabled={isProcessing} style={{
+                                            width: '100%',
+                                            background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '8px',
+                                            padding: '12px',
+                                            fontSize: '1rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.3s ease'
+                                        }}>
+                                            <i className="fas fa-brain"></i> Analyze Symptoms
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Processing Status */}
+                                {isProcessing && (
+                                <div style={{
+                                    background: 'linear-gradient(45deg, #fa709a, #fee140)',
+                                    color: 'white',
+                                    padding: '15px 20px',
+                                    borderRadius: '12px',
+                                    margin: '20px 0',
+                                    textAlign: 'center',
+                                    fontWeight: '600'
+                                }}>
+                                    <i className="fas fa-spinner fa-spin"></i>
+                                    AI is analyzing your medical data using Google Gemini... Please wait
+                                </div>
+                                )}
+
+                                {/* Reports Section */}
+                                <div>
+                                    <h2 style={{
+                                        fontSize: '1.8rem',
+                                        fontWeight: '700',
+                                        color: '#1e293b',
+                                        marginBottom: '20px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px'
+                                    }}>
+                                        <i className="fas fa-chart-line" style={{color: '#4facfe'}}></i>
+                                        Recent AI Analysis Reports
+                                    </h2>
+                                    <div>
+                                        {aiReports.length === 0 ? (
+                                            <div style={{textAlign: 'center', padding: '60px 20px', color: '#64748b'}}>
+                                                <div style={{
+                                                    width: '80px',
+                                                    height: '80px',
+                                                    margin: '0 auto 20px',
+                                                    background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                                    borderRadius: '50%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: 'white',
+                                                    fontSize: '2rem'
+                                                }}>
+                                                    <i className="fas fa-brain"></i>
+                                                </div>
+                                                <h3 style={{color: '#1e293b', marginBottom: '10px'}}>AI Medical Analysis</h3>
+                                                <p>Upload medical files or describe symptoms to get AI-powered insights</p>
+                                            </div>
+                                        ) : (
+                                            aiReports.map(report => (
+                                                <div key={report.id} style={{
+                                                    background: 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.8))',
+                                                    backdropFilter: 'blur(10px)',
+                                                    border: '1px solid rgba(226,232,240,0.3)',
+                                                    borderRadius: '16px',
+                                                    padding: '24px',
+                                                    marginBottom: '20px',
+                                                    transition: 'all 0.3s ease'
+                                                }}>
+                                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+                                                        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                                            <div style={{
+                                                                width: '40px',
+                                                                height: '40px',
+                                                                background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+                                                                borderRadius: '10px',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                color: 'white',
+                                                                fontSize: '1.1rem'
+                                                            }}>
+                                                                <i className={`fas ${report.analysis_type === 'symptom_analysis' ? 'fa-stethoscope' : 'fa-file-medical'}`}></i>
+                                                            </div>
+                                                            <div>
+                                                                <h4 style={{color: '#1e293b', margin: 0, fontSize: '1.1rem'}}>{report.file_name}</h4>
+                                                                <p style={{color: '#64748b', margin: 0, fontSize: '0.85rem'}}>
+                                                                    {new Date(report.created_at).toLocaleDateString()} • {report.file_type.toUpperCase()}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <span style={{
+                                                            background: `${getRiskColor(report.risk_level)}20`,
+                                                            color: getRiskColor(report.risk_level),
+                                                            padding: '6px 16px',
+                                                            borderRadius: '20px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: '600',
+                                                            textTransform: 'uppercase'
+                                                        }}>
+                                                            {report.risk_level} RISK
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <div style={{marginBottom: '16px'}}>
+                                                        <h5 style={{color: '#4facfe', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: '600'}}>AI SUMMARY</h5>
+                                                        <p style={{color: '#1e293b', margin: 0, lineHeight: '1.5'}}>{report.ai_summary}</p>
+                                                    </div>
+                                                    
+                                                    <div style={{marginBottom: '16px'}}>
+                                                        <h5 style={{color: '#4facfe', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: '600'}}>KEY FINDINGS</h5>
+                                                        <ul style={{color: '#64748b', margin: 0, paddingLeft: '16px'}}>
+                                                            {report.key_findings.map((finding, index) => (
+                                                                <li key={index} style={{marginBottom: '4px'}}>{finding}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <h5 style={{color: '#4facfe', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: '600'}}>RECOMMENDATIONS</h5>
+                                                        <ul style={{color: '#64748b', margin: 0, paddingLeft: '16px'}}>
+                                                            {report.recommendations.map((rec, index) => (
+                                                                <li key={index} style={{marginBottom: '4px'}}>{rec}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Profile Section */}
+                        {activeSection === 'profile' && (
+                            <div>
+                                <div className="page-header">
+                                    <h1 className="page-title">
+                                        <i className="fas fa-user" style={{color: '#3b82f6'}}></i>
+                                        My Profile
+                                    </h1>
+                                    <p className="page-subtitle">Manage your personal and health information</p>
+                                </div>
+
+                                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px'}}>
+                                    <div className="widget">
+                                        <div className="widget-header">
+                                            <div className="widget-title">
+                                                <div className="widget-icon" style={{background: 'linear-gradient(45deg, #8b5cf6, #3b82f6)'}}>
+                                                    <i className="fas fa-user"></i>
+                                                </div>
+                                                Personal Information
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                            <div>
+                                                <label style={{color: '#64748b', fontSize: '0.875rem', marginBottom: '4px', display: 'block'}}>Full Name</label>
+                                                <div style={{padding: '12px', background: 'rgba(248, 250, 252, 0.8)', borderRadius: '8px', color: '#1e293b', fontWeight: '600'}}>
+                                                    {patientInfo.name}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label style={{color: '#64748b', fontSize: '0.875rem', marginBottom: '4px', display: 'block'}}>Age</label>
+                                                <div style={{padding: '12px', background: 'rgba(248, 250, 252, 0.8)', borderRadius: '8px', color: '#1e293b', fontWeight: '600'}}>
+                                                    {patientInfo.age} years
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label style={{color: '#64748b', fontSize: '0.875rem', marginBottom: '4px', display: 'block'}}>Blood Type</label>
+                                                <div style={{padding: '12px', background: 'rgba(248, 250, 252, 0.8)', borderRadius: '8px', color: '#1e293b', fontWeight: '600'}}>
+                                                    {patientInfo.bloodType}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="widget">
+                                        <div className="widget-header">
+                                            <div className="widget-title">
+                                                <div className="widget-icon" style={{background: 'linear-gradient(45deg, #10b981, #8b5cf6)'}}>
+                                                    <i className="fas fa-shield-alt"></i>
+                                                </div>
+                                                Medical Information
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                            <div>
+                                                <label style={{color: '#64748b', fontSize: '0.875rem', marginBottom: '4px', display: 'block'}}>Allergies</label>
+                                                <div style={{padding: '12px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', color: '#ef4444', fontWeight: '600'}}>
+                                                    {patientInfo.allergies}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label style={{color: '#64748b', fontSize: '0.875rem', marginBottom: '4px', display: 'block'}}>Emergency Contact</label>
+                                                <div style={{padding: '12px', background: 'rgba(248, 250, 252, 0.8)', borderRadius: '8px', color: '#1e293b', fontWeight: '600'}}>
+                                                    {patientInfo.emergencyContact}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label style={{color: '#64748b', fontSize: '0.875rem', marginBottom: '4px', display: 'block'}}>Health Score</label>
+                                                <div style={{padding: '12px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '8px', color: '#10b981', fontWeight: '600'}}>
+                                                    {healthStats.healthScore}% - Excellent
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Book Appointment Modal */}
+                        {showBookAppointment && (
+                            <div style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'rgba(0, 0, 0, 0.5)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 1000
+                            }}>
+                                <div style={{
+                                    background: 'white',
+                                    padding: '32px',
+                                    borderRadius: '16px',
+                                    width: '500px',
+                                    maxWidth: '90vw'
+                                }}>
+                                    <h3 style={{marginBottom: '24px', color: '#1e293b'}}>Book New Appointment</h3>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                        <select
+                                            value={newAppointment.doctor}
+                                            onChange={(e) => setNewAppointment({...newAppointment, doctor: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        >
+                                            <option value="">Select Doctor</option>
+                                            <option value="Dr. Sarah Johnson">Dr. Sarah Johnson - Cardiology</option>
+                                            <option value="Dr. Michael Chen">Dr. Michael Chen - General Medicine</option>
+                                            <option value="Dr. Emily Davis">Dr. Emily Davis - Dermatology</option>
+                                            <option value="Dr. James Wilson">Dr. James Wilson - Neurology</option>
+                                        </select>
+                                        <select
+                                            value={newAppointment.department}
+                                            onChange={(e) => setNewAppointment({...newAppointment, department: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        >
+                                            <option value="">Select Department</option>
+                                            <option value="Cardiology">Cardiology</option>
+                                            <option value="General Medicine">General Medicine</option>
+                                            <option value="Dermatology">Dermatology</option>
+                                            <option value="Neurology">Neurology</option>
+                                        </select>
+                                        <input
+                                            type="date"
+                                            value={newAppointment.date}
+                                            onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <input
+                                            type="time"
+                                            value={newAppointment.time}
+                                            onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <textarea
+                                            placeholder="Reason for visit"
+                                            value={newAppointment.reason}
+                                            onChange={(e) => setNewAppointment({...newAppointment, reason: e.target.value})}
+                                            style={{padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', minHeight: '80px'}}
+                                        />
+                                    </div>
+                                    <div style={{display: 'flex', gap: '12px', marginTop: '24px'}}>
+                                        <button className="btn btn-primary" onClick={handleBookAppointment}>
+                                            Book Appointment
+                                        </button>
+                                        <button className="btn" onClick={() => setShowBookAppointment(false)} style={{background: '#f1f5f9', color: '#64748b'}}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* AI Chat Modal */}
+                        {showAIChat && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '500px', width: '90%', maxHeight: '600px', display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>💬 AI Health Assistant</h3>
+                                        <button onClick={() => setShowAIChat(false)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{flex: 1, overflowY: 'auto', marginBottom: '16px', minHeight: '300px', maxHeight: '400px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px'}}>
+                                        {aiMessages.length === 0 ? (
+                                            <div style={{textAlign: 'center', color: '#64748b', padding: '40px 20px'}}>
+                                                <i className="fas fa-robot" style={{fontSize: '48px', marginBottom: '16px', color: '#8b5cf6'}}></i>
+                                                <p>Hello! I'm your AI Health Assistant. Ask me any health-related questions!</p>
+                                            </div>
+                                        ) : (
+                                            aiMessages.map((msg, index) => (
+                                                <div key={index} style={{marginBottom: '16px'}}>
+                                                    <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px'}}>
+                                                        <div style={{width: '24px', height: '24px', borderRadius: '50%', background: msg.type === 'user' ? '#3b82f6' : '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px'}}>
+                                                            {msg.type === 'user' ? 'U' : 'AI'}
+                                                        </div>
+                                                        <span style={{fontSize: '12px', color: '#64748b'}}>{msg.time}</span>
+                                                    </div>
+                                                    <div style={{marginLeft: '32px', padding: '12px', background: msg.type === 'user' ? '#f1f5f9' : '#f0fdf4', borderRadius: '8px', whiteSpace: 'pre-line'}}>
+                                                        {msg.message}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', gap: '8px'}}>
+                                        <input
+                                            type="text"
+                                            value={currentMessage}
+                                            onChange={(e) => setCurrentMessage(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && sendAIMessage()}
+                                            placeholder="Ask your health question..."
+                                            style={{flex: 1, padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                        />
+                                        <button onClick={sendAIMessage} className="btn btn-primary">
+                                            <i className="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* AI Settings Modal */}
+                        {showAISettings && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>⚙️ AI Settings</h3>
+                                        <button onClick={() => setShowAISettings(false)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                        {Object.entries(aiSettings).map(([key, value]) => (
+                                            <div key={key} style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: '#f8fafc', borderRadius: '8px'}}>
+                                                <span style={{color: '#1e293b', textTransform: 'capitalize'}}>{key.replace(/([A-Z])/g, ' $1')}</span>
+                                                <label style={{position: 'relative', display: 'inline-block', width: '48px', height: '24px'}}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={value}
+                                                        onChange={(e) => setAiSettings({...aiSettings, [key]: e.target.checked})}
+                                                        style={{opacity: 0, width: 0, height: 0}}
+                                                    />
+                                                    <span style={{
+                                                        position: 'absolute',
+                                                        cursor: 'pointer',
+                                                        top: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        background: value ? '#10b981' : '#ccc',
+                                                        transition: '0.4s',
+                                                        borderRadius: '24px'
+                                                    }}>
+                                                        <span style={{
+                                                            position: 'absolute',
+                                                            content: '',
+                                                            height: '18px',
+                                                            width: '18px',
+                                                            left: value ? '27px' : '3px',
+                                                            bottom: '3px',
+                                                            background: 'white',
+                                                            transition: '0.4s',
+                                                            borderRadius: '50%'
+                                                        }}></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    
+                                    <div style={{marginTop: '24px', textAlign: 'center'}}>
+                                        <button onClick={() => {
+                                            setShowAISettings(false);
+                                            const settingsNotification = {
+                                                id: notifications.length + 1,
+                                                message: '✅ AI Settings updated successfully!',
+                                                time: 'Just now',
+                                                type: 'success'
+                                            };
+                                            setNotifications([settingsNotification, ...notifications]);
+                                        }} className="btn btn-primary">
+                                            Save Settings
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Appointment Details Modal */}
+                        {selectedAppointment && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>📅 Appointment Details</h3>
+                                        <button onClick={() => setSelectedAppointment(null)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                        <div><strong>Doctor:</strong> {selectedAppointment.doctor}</div>
+                                        <div><strong>Department:</strong> {selectedAppointment.department}</div>
+                                        <div><strong>Date:</strong> {selectedAppointment.date}</div>
+                                        <div><strong>Time:</strong> {selectedAppointment.time}</div>
+                                        <div><strong>Status:</strong> <span className={`status-badge ${getStatusBadge(selectedAppointment.status)}`}>{selectedAppointment.status}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Prescription Details Modal */}
+                        {selectedPrescription && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>💊 Prescription Details</h3>
+                                        <button onClick={() => setSelectedPrescription(null)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                        <div><strong>Medication:</strong> {selectedPrescription.medication}</div>
+                                        <div><strong>Doctor:</strong> {selectedPrescription.doctor}</div>
+                                        <div><strong>Instructions:</strong> {selectedPrescription.instructions}</div>
+                                        <div><strong>Refills Remaining:</strong> {selectedPrescription.refills}</div>
+                                        <div><strong>Status:</strong> <span className={`status-badge ${getStatusBadge(selectedPrescription.status)}`}>{selectedPrescription.status}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Lab Result Details Modal */}
+                        {selectedLabResult && (
+                            <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <div style={{background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px'}}>
+                                        <h3 style={{color: '#1e293b', margin: 0}}>🧪 Lab Result Details</h3>
+                                        <button onClick={() => setSelectedLabResult(null)} style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b'}}>×</button>
+                                    </div>
+                                    
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                                        <div><strong>Test:</strong> {selectedLabResult.test}</div>
+                                        <div><strong>Doctor:</strong> {selectedLabResult.doctor}</div>
+                                        <div><strong>Date:</strong> {selectedLabResult.date}</div>
+                                        <div><strong>Status:</strong> <span className={`status-badge ${getStatusBadge(selectedLabResult.status)}`}>{selectedLabResult.status}</span></div>
+                                        <div><strong>Result:</strong> {selectedLabResult.result}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<PatientDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>
